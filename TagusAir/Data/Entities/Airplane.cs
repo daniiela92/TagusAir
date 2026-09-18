@@ -26,7 +26,7 @@ namespace TagusAir.Data.Entities
         public bool IsActive { get; set; } = true;
 
         [Display(Name = "Image")]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public override string ToString()
         {
