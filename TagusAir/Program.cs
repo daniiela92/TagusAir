@@ -14,6 +14,8 @@ builder.Services.AddDbContext<DataContext>(cfg =>
 
 });
 
+builder.Services.AddTransient<SeedDb>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,4 +37,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+RunSeeding(app);
+
 app.Run();
+
+static void RunSeeding(IHost host)
+{
+    var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopeFactory.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetService<SeedDb>();
+        seeder.SeedAsync().Wait();
+    }
+}
