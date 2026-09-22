@@ -2,7 +2,7 @@
 
 namespace TagusAir.Data.Entities
 {
-    public class Airplane
+    public class Airplane : IEntity
     {
         public int Id { get; set; }
 

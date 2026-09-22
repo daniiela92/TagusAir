@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DataContext>(cfg =>
 });
 
 builder.Services.AddTransient<SeedDb>();
+builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 
 var app = builder.Build();
 
