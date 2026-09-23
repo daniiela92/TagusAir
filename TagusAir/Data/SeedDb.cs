@@ -1,15 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 
 namespace TagusAir.Data
 {
     public class SeedDb
     {
         private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         public async Task SeedAsync()
@@ -17,7 +21,31 @@ namespace TagusAir.Data
 
             await _context.Database.MigrateAsync();
 
-            if(!_context.Airplanes.Any())
+            var user = await _userHelper.GetUserByEmailAsync("danielap@yopmail.com");
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    FirstName = "Daniela",
+                    LastName = "Pais",
+                    Email = "danielap@yopmail.com",
+                    UserName = "danielap@yopmail.com",
+                    PhoneNumber = "912345678",
+
+                };
+
+                var result = await _userHelper.AddUserAsync(user, "123456");
+
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the admin user in seeder.");
+                }
+            }
+
+           
+
+            if (!_context.Airplanes.Any())
             {
                 AddAirplane("Airbus", "A320neo", 165, 15);
                 AddAirplane("Boeing", "737 MAX 8", 162, 16);

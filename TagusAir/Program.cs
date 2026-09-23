@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TagusAir.Data;
+using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +17,24 @@ builder.Services.AddDbContext<DataContext>(cfg =>
 
 });
 
+builder.Services.AddIdentity<User, IdentityRole>(cfg =>
+{
+
+    cfg.User.RequireUniqueEmail = true;
+    cfg.Password.RequireDigit = false;
+    cfg.Password.RequiredUniqueChars = 1;
+    cfg.Password.RequireLowercase = false;
+    cfg.Password.RequireNonAlphanumeric = false;
+    cfg.Password.RequireUppercase = false;
+    cfg.Password.RequiredLength = 6;
+
+
+}).AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<DataContext>();
+
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
+builder.Services.AddScoped<IUserHelper, UserHelper>();
 
 var app = builder.Build();
 
@@ -32,6 +51,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
