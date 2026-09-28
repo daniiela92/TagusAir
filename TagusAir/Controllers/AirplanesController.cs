@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
 using TagusAir.Data;
+using Microsoft.AspNetCore.Authorization;
 
+
+[Authorize(Roles = "Admin")]
 public class AirplanesController : Controller
 {
     

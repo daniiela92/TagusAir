@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
 using TagusAir.Helpers;
@@ -21,6 +22,12 @@ namespace TagusAir.Data
 
             await _context.Database.MigrateAsync();
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Employee");
+            await _userHelper.CheckRoleAsync("Customer");
+
+
+
             var user = await _userHelper.GetUserByEmailAsync("danielap@yopmail.com");
 
             if (user == null)
@@ -41,9 +48,19 @@ namespace TagusAir.Data
                 {
                     throw new InvalidOperationException("Could not create the admin user in seeder.");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
-           
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+
+            if (!isInRole) 
+            {
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
+
+            }
+
 
             if (!_context.Airplanes.Any())
             {
