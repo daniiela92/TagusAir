@@ -61,6 +61,55 @@ namespace TagusAir.Data
 
             }
 
+            if (!_context.Countries.Any())
+            {
+                _context.Countries.Add(new Country
+                {
+                    Name = "Portugal",
+                    FlagImageUrl = "/images/no_image.png",
+                    Airports = new List<Airport>
+                {
+                    new Airport { City = "Lisboa", Name = "Humberto Delgado", IataCode = "LIS" },
+                    new Airport { City = "Porto", Name = "Francisco Sá Carneiro", IataCode = "OPO" },
+                    new Airport { City = "Faro", Name = "Faro", IataCode = "FAO" }
+                }
+                });
+
+                _context.Countries.Add(new Country
+                {
+                    Name = "Spain",
+                    FlagImageUrl = "/images/no_image.png",
+                    Airports = new List<Airport>
+                {
+                    new Airport { City = "Madrid", Name = "Adolfo Suárez Barajas", IataCode = "MAD" },
+                    new Airport { City = "Barcelona", Name = "El Prat", IataCode = "BCN" }
+                }
+                });
+
+                _context.Countries.Add(new Country
+                {
+                    Name = "France",
+                    FlagImageUrl = "/images/no_image.png",
+                    Airports = new List<Airport>
+                {
+                    new Airport { City = "Paris", Name = "Charles de Gaulle", IataCode = "CDG" }
+                }
+                });
+
+                _context.Countries.Add(new Country
+                {
+                    Name = "United Kingdom",
+                    FlagImageUrl = "/images/no_image.png",
+                    Airports = new List<Airport>
+                {
+                     new Airport { City = "London", Name = "Heathrow", IataCode = "LHR" },
+                     new Airport { City = "London", Name = "Gatwick", IataCode = "LGW" }
+                }
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
 
             if (!_context.Airplanes.Any())
             {
@@ -74,7 +123,7 @@ namespace TagusAir.Data
 
         }
 
-
+      
         private void AddAirplane(string brand, string model, int economySeats, int businessSeats)
         {
             _context.Airplanes.Add(new Airplane
@@ -87,5 +136,7 @@ namespace TagusAir.Data
                 ImageUrl = "/images/no_image.png"
             });
         } 
+
+
     }
 }
