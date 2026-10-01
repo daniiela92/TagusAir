@@ -35,6 +35,7 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
 var app = builder.Build();
 

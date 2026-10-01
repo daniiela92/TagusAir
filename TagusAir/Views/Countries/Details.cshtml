@@ -1,0 +1,48 @@
+﻿@model TagusAir.Data.Entities.Country
+
+@{
+    ViewData["Title"] = "Airports";
+}
+
+<h2>@Model.Name</h2>
+
+<p>
+    <img src="@Model.FlagImageUrl" alt="@Model.Name" style="width: 60px;" />
+</p>
+
+<p>
+    <a asp-action="AddAirport" asp-route-id="@Model.Id" class="btn btn-primary">Add Airport</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to Countries</a>
+</p>
+
+@if (Model.Airports == null || Model.Airports.Count == 0)
+{
+    <p>This country has no airports yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Airport</th>
+                <th>IATA Code</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var airport in Model.Airports)
+            {
+                <tr>
+                    <td>@airport.City</td>
+                    <td>@airport.Name</td>
+                    <td>@airport.IataCode</td>
+                    <td>
+                        <a asp-action="EditAirport" asp-route-id="@airport.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="DeleteAirport" asp-route-id="@airport.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

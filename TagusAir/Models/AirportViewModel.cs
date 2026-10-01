@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TagusAir.Data.Entities
+namespace TagusAir.Models
 {
-    public class Airport :IEntity
+    public class AirportViewModel
     {
-        public int Id { get; set; }
+        public int CountryId { get; set; }
+
+        public int AirportId { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(80, ErrorMessage = "The field {0} can contain {1} characters lenght.")]
@@ -19,15 +21,5 @@ namespace TagusAir.Data.Entities
         [Display(Name = "IATA Code")]
         public string IataCode { get; set; }
 
-        public int CountryId { get; set; }
-
-        public Country? Country { get; set; }
-
-
-
-        public override string ToString()
-        {
-            return $"{City} - {Name} ({IataCode})";
-        }
     }
 }
