@@ -36,6 +36,7 @@ builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IImageHelper, ImageHelper>();
 
 var app = builder.Build();
 

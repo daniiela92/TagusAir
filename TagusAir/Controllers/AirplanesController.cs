@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
 using TagusAir.Data;
 using Microsoft.AspNetCore.Authorization;
+using TagusAir.Helpers;
+using TagusAir.Models;
 
 
 [Authorize(Roles = "Admin")]
@@ -11,15 +13,19 @@ public class AirplanesController : Controller
 {
     
     private readonly IAirplaneRepository _airplaneRepository;
+    private readonly IImageHelper _imageHelper;
 
-    public AirplanesController(IAirplaneRepository airplaneRepository)
+    public AirplanesController(
+        IAirplaneRepository airplaneRepository, 
+        IImageHelper imageHelper)
     {
         
         _airplaneRepository = airplaneRepository;
+        _imageHelper = imageHelper;
     }
 
     // GET: AIRPLANES
-    public async Task<IActionResult> Index()    
+    public IActionResult Index()    
     {
         return View(_airplaneRepository.GetAll());
     }
@@ -45,7 +51,7 @@ public class AirplanesController : Controller
     // GET: AIRPLANES/Create
     public IActionResult Create()
     {
-        return View();
+        return View(new AirplaneViewModel());
     }
 
     // POST: AIRPLANES/Create
@@ -53,14 +59,23 @@ public class AirplanesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Brand,Model,EconomySeats,BusinessSeats,IsActive,ImageUrl")] Airplane airplane)
+    public async Task<IActionResult> Create(AirplaneViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
+            string path = string.Empty;
+
+            if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+            {
+                path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
+            }
+
+            var airplane = ToAirplane(viewModel, path);
+
             await _airplaneRepository.CreateAsync(airplane);
             return RedirectToAction(nameof(Index));
         }
-        return View(airplane);
+        return View(viewModel);
     }
 
     // GET: AIRPLANES/Edit/5
@@ -78,7 +93,7 @@ public class AirplanesController : Controller
             return NotFound();
         }
 
-        return View(airplane);
+        return View(ToAirplaneViewModel(airplane));
     }
 
     // POST: AIRPLANES/Edit/5
@@ -86,22 +101,27 @@ public class AirplanesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Brand,Model,EconomySeats,BusinessSeats,IsActive,ImageUrl")] Airplane airplane)
+    public async Task<IActionResult> Edit(AirplaneViewModel viewModel)
     {
-        if (id != airplane.Id)
-        {
-            return NotFound();
-        }
-
+      
         if (ModelState.IsValid)
         {
             try
             {
+                string path = viewModel.ImageUrl;
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
+                }
+
+                var airplane = ToAirplane(viewModel, path);
+
                 await _airplaneRepository.UpdateAsync(airplane);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _airplaneRepository.ExistAsync(airplane.Id))
+                if (!await _airplaneRepository.ExistAsync(viewModel.Id))
                 {
                     return NotFound();
                 }
@@ -112,7 +132,7 @@ public class AirplanesController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        return View(airplane);
+        return View(viewModel);
     }
 
     // GET: AIRPLANES/Delete/5
@@ -149,5 +169,33 @@ public class AirplanesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-  
+    private Airplane ToAirplane(AirplaneViewModel model, string path)
+    {
+        return new Airplane
+        {
+            Id = model.Id,
+            Brand = model.Brand,
+            Model = model.Model,
+            EconomySeats = model.EconomySeats,
+            BusinessSeats = model.BusinessSeats,
+            IsActive = model.IsActive,
+            ImageUrl = path
+        };
+    }
+
+    private AirplaneViewModel ToAirplaneViewModel(Airplane airplane)
+    {
+        return new AirplaneViewModel
+        {
+            Id = airplane.Id,
+            Brand = airplane.Brand,
+            Model = airplane.Model,
+            EconomySeats = airplane.EconomySeats,
+            BusinessSeats = airplane.BusinessSeats,
+            IsActive = airplane.IsActive,
+            ImageUrl = airplane.ImageUrl
+        };
+    }
+
+
 }
