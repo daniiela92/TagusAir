@@ -14,14 +14,17 @@ public class AirplanesController : Controller
     
     private readonly IAirplaneRepository _airplaneRepository;
     private readonly IImageHelper _imageHelper;
+    private readonly IConverterHelper _converterHelper;
 
     public AirplanesController(
         IAirplaneRepository airplaneRepository, 
-        IImageHelper imageHelper)
+        IImageHelper imageHelper,
+        IConverterHelper converterHelper)
     {
         
         _airplaneRepository = airplaneRepository;
         _imageHelper = imageHelper;
+       _converterHelper = converterHelper;
     }
 
     // GET: AIRPLANES
@@ -70,7 +73,7 @@ public class AirplanesController : Controller
                 path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
             }
 
-            var airplane = ToAirplane(viewModel, path);
+            var airplane = _converterHelper.ToAirplane(viewModel, path, true);
 
             await _airplaneRepository.CreateAsync(airplane);
             return RedirectToAction(nameof(Index));
@@ -93,7 +96,7 @@ public class AirplanesController : Controller
             return NotFound();
         }
 
-        return View(ToAirplaneViewModel(airplane));
+        return View(_converterHelper.ToAirplaneViewModel(airplane));
     }
 
     // POST: AIRPLANES/Edit/5
@@ -169,33 +172,6 @@ public class AirplanesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private Airplane ToAirplane(AirplaneViewModel model, string path)
-    {
-        return new Airplane
-        {
-            Id = model.Id,
-            Brand = model.Brand,
-            Model = model.Model,
-            EconomySeats = model.EconomySeats,
-            BusinessSeats = model.BusinessSeats,
-            IsActive = model.IsActive,
-            ImageUrl = path
-        };
-    }
-
-    private AirplaneViewModel ToAirplaneViewModel(Airplane airplane)
-    {
-        return new AirplaneViewModel
-        {
-            Id = airplane.Id,
-            Brand = airplane.Brand,
-            Model = airplane.Model,
-            EconomySeats = airplane.EconomySeats,
-            BusinessSeats = airplane.BusinessSeats,
-            IsActive = airplane.IsActive,
-            ImageUrl = airplane.ImageUrl
-        };
-    }
-
+   
 
 }
