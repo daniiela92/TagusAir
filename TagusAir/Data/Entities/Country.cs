@@ -13,7 +13,7 @@ namespace TagusAir.Data.Entities
         [Display(Name = "Flag Image")]
         public string? FlagImageUrl { get; set; }
 
-        public ICollection<Airport> Airports { get; set; }
+        public ICollection<Airport>? Airports { get; set; }
 
         [Display(Name = "Number of Airports")]
         public int NumberOfAirports => Airports == null ? 0 : Airports.Count;

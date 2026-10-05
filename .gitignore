@@ -431,3 +431,10 @@ FodyWeavers.xsd
 # Local secrets
 
 **/appsettings.Production.json
+
+wwwroot/images/airplanes/*
+wwwroot/images/countries/*
+!wwwroot/images/airplanes/no_image.png
+!wwwroot/images/countries/no_image.png
+/TagusAir/wwwroot/images/countries/6e9c06b1-063c-47a9-8e61-c01ed2a7e44a.png
+/TagusAir/wwwroot/images/countries/e5b3680b-9e40-4c6d-8b81-3feddeb05b7b.png

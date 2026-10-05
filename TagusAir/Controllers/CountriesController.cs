@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TagusAir.Data;
 using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 using TagusAir.Models;
 
 namespace TagusAir.Controllers
@@ -10,10 +11,17 @@ namespace TagusAir.Controllers
     public class CountriesController : Controller
     {
         private readonly ICountryRepository _countryRepository;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public CountriesController(ICountryRepository countryRepository)
+        public CountriesController(
+            ICountryRepository countryRepository,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _countryRepository = countryRepository;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         public IActionResult Index()
@@ -40,20 +48,29 @@ namespace TagusAir.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new CountryViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Country country)
+        public async Task<IActionResult> Create(CountryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                string path = string.Empty;
+
+                if (viewModel.FlagFile != null && viewModel.FlagFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(viewModel.FlagFile, "countries");
+                }
+
+                var country = _converterHelper.ToCountry(viewModel, path, true);
+
                 await _countryRepository.CreateAsync(country);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(country);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -70,20 +87,29 @@ namespace TagusAir.Controllers
                 return NotFound();
             }
 
-            return View(country);
+            return View(_converterHelper.ToCountryViewModel(country));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Country country)
+        public async Task<IActionResult> Edit(CountryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                string path = viewModel.FlagImageUrl;
+
+                if (viewModel.FlagFile != null && viewModel.FlagFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(viewModel.FlagFile, "countries");
+                }
+
+                var country = _converterHelper.ToCountry(viewModel, path, false);
+
                 await _countryRepository.UpdateAsync(country);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(country);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)
