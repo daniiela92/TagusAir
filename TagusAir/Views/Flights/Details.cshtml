@@ -1,0 +1,41 @@
+@model TagusAir.Data.Entities.Flight
+
+@{
+    ViewData["Title"] = "Flight Details";
+}
+
+<h2>@Model.FlightNumber</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">From</dt>
+    <dd class="col-sm-9">
+        <img src="@Model.DepartureAirport.Country.FlagImageUrl" style="width: 24px;" />
+        @Model.DepartureAirport.City - @Model.DepartureAirport.Name (@Model.DepartureAirport.IataCode)
+    </dd>
+
+    <dt class="col-sm-3">To</dt>
+    <dd class="col-sm-9">
+        <img src="@Model.ArrivalAirport.Country.FlagImageUrl" style="width: 24px;" />
+        @Model.ArrivalAirport.City - @Model.ArrivalAirport.Name (@Model.ArrivalAirport.IataCode)
+    </dd>
+
+    <dt class="col-sm-3">Departure</dt>
+    <dd class="col-sm-9">@Model.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">Arrival</dt>
+    <dd class="col-sm-9">@Model.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">Duration</dt>
+    <dd class="col-sm-9">@Model.Duration.Hours h @Model.Duration.Minutes min</dd>
+
+    <dt class="col-sm-3">Airplane</dt>
+    <dd class="col-sm-9">@Model.Airplane.Brand @Model.Airplane.Model</dd>
+
+    <dt class="col-sm-3">Economy</dt>
+    <dd class="col-sm-9">@Model.BasePrice.ToString("C2")</dd>
+
+    <dt class="col-sm-3">Business</dt>
+    <dd class="col-sm-9">@Model.BusinessPrice.ToString("C2")</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

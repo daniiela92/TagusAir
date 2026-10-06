@@ -118,7 +118,7 @@ public class AirplanesController : Controller
                     path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
                 }
 
-                var airplane = _converterHelper.ToAirplane(viewModel, path, true);
+                var airplane = _converterHelper.ToAirplane(viewModel, path, false);
 
                 await _airplaneRepository.UpdateAsync(airplane);
             }

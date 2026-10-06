@@ -12,5 +12,9 @@ namespace TagusAir.Helpers
         Country ToCountry(CountryViewModel model, string path, bool isNew);
 
         CountryViewModel ToCountryViewModel(Country country);
+
+        Flight ToFlight (FlightViewModel model, bool isNew);
+
+        FlightViewModel ToFlightViewModel(Flight flight);
     }
 }

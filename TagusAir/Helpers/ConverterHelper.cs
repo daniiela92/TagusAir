@@ -52,5 +52,36 @@ namespace TagusAir.Helpers
                 FlagImageUrl = country.FlagImageUrl
             };
         }
+
+        public Flight ToFlight(FlightViewModel model, bool isNew)
+        {
+            return new Flight
+            {
+                Id = isNew ? 0 : model.Id,
+                FlightNumber = model.FlightNumber,
+                DepartureTime = model.DepartureTime,
+                ArrivalTime = model.ArrivalTime,
+                DepartureAirportId = model.DepartureAirportId,
+                ArrivalAirportId = model.ArrivalAirportId,
+                AirplaneId = model.AirplaneId,
+                BasePrice = model.BasePrice
+
+            };
+        }
+
+        public FlightViewModel ToFlightViewModel(Flight flight)
+        {
+            return new FlightViewModel
+            {
+                Id = flight.Id,
+                FlightNumber = flight.FlightNumber,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                DepartureAirportId = flight.DepartureAirportId,
+                ArrivalAirportId = flight.ArrivalAirportId,
+                AirplaneId = flight.AirplaneId,
+                BasePrice = flight.BasePrice
+            };
+        }
     }
 }

@@ -18,6 +18,8 @@ namespace TagusAir.Data
 
         public DbSet<Airport> Airports { get; set; }
 
+        public DbSet<Flight> Flights { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

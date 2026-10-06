@@ -1,0 +1,56 @@
+@model IEnumerable<TagusAir.Data.Entities.Flight>
+
+@{
+    ViewData["Title"] = "Flights";
+}
+
+<h2>Available Flights</h2>
+
+@if (User.IsInRole("Employee"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Flight</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FlightNumber</td>
+                <td>
+                    <img src="@item.DepartureAirport.Country.FlagImageUrl" style="width: 24px;" />
+                    @item.DepartureAirport.City (@item.DepartureAirport.IataCode)
+                </td>
+                <td>
+                    <img src="@item.ArrivalAirport.Country.FlagImageUrl" style="width: 24px;" />
+                    @item.ArrivalAirport.City (@item.ArrivalAirport.IataCode)
+                </td>
+                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.BasePrice.ToString("C2")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+
+                    @if (User.IsInRole("Employee"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
