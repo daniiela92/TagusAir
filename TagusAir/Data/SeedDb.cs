@@ -10,11 +10,15 @@ namespace TagusAir.Data
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly IAirplaneRepository _airplaneRepository;
 
-        public SeedDb(DataContext context, IUserHelper userHelper)
+        public SeedDb(DataContext context,
+            IUserHelper userHelper,
+            IAirplaneRepository airplaneRepository)
         {
             _context = context;
             _userHelper = userHelper;
+            _airplaneRepository = airplaneRepository;
         }
 
         public async Task SeedAsync()
@@ -147,12 +151,11 @@ namespace TagusAir.Data
 
             if (!_context.Airplanes.Any())
             {
-                AddAirplane("Airbus", "A320neo", 165, 15);
-                AddAirplane("Boeing", "737 MAX 8", 162, 16);
-                AddAirplane("Airbus", "A330-900", 250, 34);
-                AddAirplane("Embraer", "E195-E2", 132, 0);
+                await AddAirplaneAsync("Airbus", "A320neo", 165, 15);
+                await AddAirplaneAsync("Boeing", "737 MAX 8", 162, 16);
+                await AddAirplaneAsync("Airbus", "A330-900", 250, 34);
+                await AddAirplaneAsync("Embraer", "E195-E2", 132, 0);
 
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Flights.Any())
@@ -224,9 +227,9 @@ namespace TagusAir.Data
         }
 
       
-        private void AddAirplane(string brand, string model, int economySeats, int businessSeats)
+        private async Task AddAirplaneAsync(string brand, string model, int economySeats, int businessSeats)
         {
-            _context.Airplanes.Add(new Airplane
+            await _airplaneRepository.CreateWithSeatsAsync(new Airplane
             {
                 Brand = brand,
                 Model = model,
