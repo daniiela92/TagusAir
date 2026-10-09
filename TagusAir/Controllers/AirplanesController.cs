@@ -75,7 +75,7 @@ public class AirplanesController : Controller
 
             var airplane = _converterHelper.ToAirplane(viewModel, path, true);
 
-            await _airplaneRepository.CreateAsync(airplane);
+            await _airplaneRepository.CreateWithSeatsAsync(airplane);
             return RedirectToAction(nameof(Index));
         }
         return View(viewModel);
@@ -165,7 +165,7 @@ public class AirplanesController : Controller
 
         if (airplane != null)
         {
-            await _airplaneRepository.DeleteAsync(airplane);
+            await _airplaneRepository.DeleteWithSeatsAsync(airplane);
         }
 
         

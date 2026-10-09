@@ -20,9 +20,17 @@ namespace TagusAir.Data
 
         public DbSet<Flight> Flights { get; set; }
 
+        public DbSet<Seat> Seats { get; set; }
+
+        public DbSet<Ticket> Tickets  { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Ticket>().
+                HasIndex(t => new { t.FlightId, t.SeatId }).
+                IsUnique();
 
             var cascadeFKs = modelBuilder.Model
                 .GetEntityTypes()

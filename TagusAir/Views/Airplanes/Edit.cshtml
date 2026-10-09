@@ -23,15 +23,15 @@
                 <input asp-for="Model" class="form-control" />
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="EconomySeats" class="control-label"></label>
-                <input asp-for="EconomySeats" class="form-control" />
-                <span asp-validation-for="EconomySeats" class="text-danger"></span>
+                <p class="form-control-plaintext">@Model.EconomySeats</p>
+                <input type="hidden" asp-for="EconomySeats" />
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="BusinessSeats" class="control-label"></label>
-                <input asp-for="BusinessSeats" class="form-control" />
-                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
+                <p class="form-control-plaintext">@Model.BusinessSeats</p>
+                <input type="hidden" asp-for="BusinessSeats" />
             </div>
             <div class="form-group">
                 <label asp-for="IsActive" class="control-label"></label>
