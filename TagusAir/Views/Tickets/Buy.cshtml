@@ -1,0 +1,58 @@
+﻿@model TagusAir.Models.BuyTicketViewModel
+
+@{
+    ViewData["Title"] = "Buy Ticket";
+}
+
+<h2>Buy Ticket</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">Flight</dt>
+            <dd class="col-sm-8">@Model.Flight.FlightNumber</dd>
+
+            <dt class="col-sm-4">From</dt>
+            <dd class="col-sm-8">
+                @Model.Flight.DepartureAirport.City (@Model.Flight.DepartureAirport.IataCode)
+            </dd>
+
+            <dt class="col-sm-4">To</dt>
+            <dd class="col-sm-8">
+                @Model.Flight.ArrivalAirport.City (@Model.Flight.ArrivalAirport.IataCode)
+            </dd>
+
+            <dt class="col-sm-4">Departure</dt>
+            <dd class="col-sm-8">@Model.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4">Economy</dt>
+            <dd class="col-sm-8">@Model.Flight.BasePrice.ToString("C2")</dd>
+
+            <dt class="col-sm-4">Business</dt>
+            <dd class="col-sm-8">@Model.Flight.BusinessPrice.ToString("C2")</dd>
+        </dl>
+
+        <hr />
+
+        <form asp-action="Buy" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="FlightId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="SeatId" class="control-label"></label>
+                <select asp-for="SeatId" asp-items="Model.Seats" class="form-control"></select>
+                <span asp-validation-for="SeatId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Confirm purchase</button>
+            <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary">Back to Flights</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
