@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using TagusAir.Models;
 
 namespace TagusAir.Controllers
 {
-    [Authorize]
+    
     public class TicketsController : Controller
     {
         private readonly ITicketRepository _ticketRepository;
@@ -102,10 +103,13 @@ namespace TagusAir.Controllers
                 }
                 else
                 {
-                    var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                    
-                    await _ticketRepository.BuyTicketsAsync(viewModel.FlightId, viewModel.SeatId, user.Id);
-                    return RedirectToAction(nameof(MyTickets));
+                    var user = await GetOrCreateUserAsync(viewModel);
+
+                    if (user != null)
+                    {
+                        await _ticketRepository.BuyTicketsAsync(viewModel.FlightId, viewModel.SeatId, user.Id);
+                        return RedirectToAction(nameof(MyTickets));
+                    }
                 }
                 
             }
@@ -115,11 +119,75 @@ namespace TagusAir.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
         public async Task<IActionResult> MyTickets()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
             var list = await _ticketRepository.GetTicketsByUserAsync(user.Id);
             return View(list);
+        }
+
+        private async Task<User?> GetOrCreateUserAsync(BuyTicketViewModel viewModel)
+        {
+
+            if (this.User.Identity.IsAuthenticated)
+            {
+
+                return await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            }
+
+            if (string.IsNullOrEmpty(viewModel.FirstName) || string.IsNullOrEmpty(viewModel.LastName) || string.IsNullOrEmpty(viewModel.Email))
+            {
+                ModelState.AddModelError(string.Empty, "Please fill in your name and email");
+                return null;
+            }
+
+            var userExists = await _userHelper.GetUserByEmailAsync(viewModel.Email);
+
+            if (userExists != null)
+            {
+                ModelState.AddModelError(string.Empty, "This email is already registered. Please log in to buy your ticket.");
+                return null;
+            }
+
+
+            var generatedPassword = Guid.NewGuid().ToString();
+
+            User createdUser = new User
+            {
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                Email = viewModel.Email,
+                UserName = viewModel.Email,
+            };
+
+
+
+            var result = await _userHelper.AddUserAsync(createdUser, generatedPassword);
+
+            if (result != IdentityResult.Success)
+            {
+                ModelState.AddModelError(string.Empty, "Could not create the user account");
+                return null;
+            }
+
+            await _userHelper.AddUserToRoleAsync(createdUser, "Customer");
+
+            var loginViewModel = new LoginViewModel
+            {
+                Username = viewModel.Email,
+                Password = generatedPassword,
+                RememberMe = false,
+
+            };
+
+            await _userHelper.LoginAsync(loginViewModel);
+
+            return createdUser;
+
+            
+
+
 
 
 

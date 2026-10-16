@@ -7,6 +7,12 @@ namespace TagusAir.Models
     public class BuyTicketViewModel
     {
 
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+
+        public string? Email { get; set; }
+
         public int FlightId { get; set; }
 
         public Flight? Flight {get;set;}
