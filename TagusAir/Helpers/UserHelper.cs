@@ -57,6 +57,11 @@ namespace TagusAir.Helpers
             return await _userManager.ConfirmEmailAsync(user, token);
         }
 
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            return await _userManager.DeleteAsync(user);
+        }
+
         public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -75,6 +80,15 @@ namespace TagusAir.Helpers
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<List<User>> GetUsersInRoleAsync(string roleName)
+        {
+            var userInRole = await _userManager.GetUsersInRoleAsync(roleName);
+
+            return userInRole.ToList();
+
+
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)

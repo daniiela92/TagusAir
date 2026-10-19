@@ -35,5 +35,9 @@ namespace TagusAir.Helpers
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
+
+        Task<List<User>> GetUsersInRoleAsync(string roleName);
+
+        Task<IdentityResult> DeleteUserAsync(User user);
     }
 }
