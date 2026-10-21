@@ -1,5 +1,4 @@
-﻿@model TagusAir.Data.Entities.Airport
-
+﻿@model TagusAir.Models.AirportViewModel
 @{
     ViewData["Title"] = "Edit Airport";
 }
@@ -11,7 +10,7 @@
         <form asp-action="EditAirport" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="AirportId" />
             <input type="hidden" asp-for="CountryId" />
 
             <div class="form-group mb-3">

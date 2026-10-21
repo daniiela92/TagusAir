@@ -11,13 +11,16 @@ namespace TagusAir.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public AccountController(
             IUserHelper userHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IConverterHelper converterHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
+            _converterHelper = converterHelper;
         }
 
         public IActionResult Login()
@@ -122,15 +125,10 @@ namespace TagusAir.Controllers
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var model = new ChangeUserViewModel();
 
-            if (user != null)
-            {
-                model.FirstName = user.FirstName;
-                model.LastName = user.LastName;
-                model.Passport = user.Passport;
-                model.PhoneNumber = user.PhoneNumber;
-            }
+            var model = user != null
+                ? _converterHelper.ToChangeUserViewModel(user)
+                : new ChangeUserViewModel();
 
             return View(model);
         }

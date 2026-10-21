@@ -9,6 +9,10 @@ namespace TagusAir.Helpers
 
         AirplaneViewModel ToAirplaneViewModel(Airplane airplane);
 
+        Airport ToAirport(AirportViewModel model);
+
+        AirportViewModel ToAirportViewModel(Airport airport);
+
         Country ToCountry(CountryViewModel model, string path, bool isNew);
 
         CountryViewModel ToCountryViewModel(Country country);
@@ -16,5 +20,9 @@ namespace TagusAir.Helpers
         Flight ToFlight (FlightViewModel model, bool isNew);
 
         FlightViewModel ToFlightViewModel(Flight flight);
+
+        ChangeUserViewModel ToChangeUserViewModel(User user);
+
+        EditUserViewModel ToEditUserViewModel(User user);
     }
 }

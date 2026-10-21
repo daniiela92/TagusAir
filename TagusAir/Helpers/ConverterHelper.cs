@@ -33,6 +33,41 @@ namespace TagusAir.Helpers
             };
         }
 
+        public Airport ToAirport(AirportViewModel model)
+        {
+            return new Airport
+            {
+                Id = model.AirportId,
+                Name = model.Name,
+                City = model.City,
+                IataCode = model.IataCode,
+                CountryId = model.CountryId
+            };
+        }
+
+        public AirportViewModel ToAirportViewModel(Airport airport)
+        {
+            return new AirportViewModel
+            {
+                AirportId = airport.Id,
+                Name = airport.Name,
+                City = airport.City,
+                IataCode = airport.IataCode,
+                CountryId = airport.CountryId
+            };
+        }
+
+        public ChangeUserViewModel ToChangeUserViewModel(User user)
+        {
+            return new ChangeUserViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Passport = user.Passport,
+            };
+        }
+
         public Country ToCountry(CountryViewModel model, string path, bool isNew)
         {
             return new Country
@@ -50,6 +85,19 @@ namespace TagusAir.Helpers
                 Id = country.Id,
                 Name = country.Name,
                 FlagImageUrl = country.FlagImageUrl
+            };
+        }
+
+        public EditUserViewModel ToEditUserViewModel(User user)
+        {
+            return new EditUserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Passport = user.Passport,
             };
         }
 

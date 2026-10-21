@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using TagusAir.Data.Entities;
 using TagusAir.Helpers;
 using TagusAir.Models;
@@ -12,13 +13,16 @@ namespace TagusAir.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public UsersController(
             IUserHelper userHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IConverterHelper converterHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
+            _converterHelper = converterHelper;
         }
         public async Task<IActionResult> Index()
         {
@@ -99,5 +103,59 @@ namespace TagusAir.Controllers
 
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Edit(string id) 
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var editUserViewModel = _converterHelper.ToEditUserViewModel(user);
+
+            return View(editUserViewModel);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditUserViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByIdAsync(viewModel.Id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                user.FirstName = viewModel.FirstName;
+                user.LastName = viewModel.LastName;
+                user.PhoneNumber = viewModel.PhoneNumber;
+                user.Passport = viewModel.Passport;
+
+                var result = await _userHelper.UpdateUserAsync(user);
+
+                if(result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ModelState.AddModelError(string.Empty, "The user could not be updated");
+            }
+
+            return View(viewModel);
+        }
+
+
+
     }
 }

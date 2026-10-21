@@ -188,23 +188,28 @@ namespace TagusAir.Controllers
                 return NotFound();
             }
 
-            return View(airport);
+            return View(_converterHelper.ToAirportViewModel(airport));
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAirport(Airport airport)
+        public async Task<IActionResult> EditAirport(AirportViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var countryId = await _countryRepository.UpdateAirportAsync(airport);
+                                    var airport = _converterHelper.ToAirport(viewModel);
 
-                if (countryId != 0)
-                {
-                    return RedirectToAction(nameof(Details), new { id = countryId });
-                }
+                    var countryId = await _countryRepository.UpdateAirportAsync(airport);
+
+                    if (countryId != 0)
+                    {
+                        return RedirectToAction(nameof(Details), new { id = countryId });
+                    }
+                
+
+               
             }
 
-            return View(airport);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> DeleteAirport(int? id)
