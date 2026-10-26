@@ -34,9 +34,19 @@
             </div>
 
             <div class="form-group">
+                <label asp-for="DepartureCountryId" class="control-label"></label>
+                <select asp-for="DepartureCountryId" asp-items="Model.Countries" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="DepartureAirportId" class="control-label"></label>
                 <select asp-for="DepartureAirportId" asp-items="Model.DepartureAirports" class="form-control"></select>
                 <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ArrivalCountryId" class="control-label"></label>
+                <select asp-for="ArrivalCountryId" asp-items="Model.Countries" class="form-control"></select>
             </div>
 
             <div class="form-group">
@@ -74,4 +84,44 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    @{
+        await Html.RenderPartialAsync("_ValidationCurrencyPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            function loadAirports(countrySelect, airportSelect) {
+                $(airportSelect).empty();
+                $.ajax({
+                    url: '@Url.Action("GetAirportsAsync", "Flights")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { countryId: $(countrySelect).val() },
+                    success: function (airports) {
+                        $(airportSelect).append('<option value="0">(Select an airport...)</option>');
+                        $.each(airports, function (i, airport) {
+                            $(airportSelect).append('<option value="'
+                                + airport.id + '">'
+                                + airport.city + ' - ' + airport.name + ' (' + airport.iataCode + ')</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve airports.' + ex);
+                    }
+                });
+                return false;
+            }
+
+            $("#DepartureCountryId").change(function () {
+                loadAirports("#DepartureCountryId", "#DepartureAirportId");
+            });
+
+            $("#ArrivalCountryId").change(function () {
+                loadAirports("#ArrivalCountryId", "#ArrivalAirportId");
+            });
+
+        });
+    </script>
 }

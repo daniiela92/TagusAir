@@ -1,0 +1,10 @@
+﻿<script>
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) || /^-?\d+([.,]\d+)?$/.test(value);
+    };
+
+    $.validator.methods.range = function (value, element, param) {
+        var number = parseFloat(value.replace(",", "."));
+        return this.optional(element) || (number >= param[0] && number <= param[1]);
+    };
+</script>

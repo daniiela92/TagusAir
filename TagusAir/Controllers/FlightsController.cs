@@ -10,14 +10,17 @@ namespace TagusAir.Controllers
     {
         private readonly IFlightRepository _flightRepository;
         private readonly IConverterHelper _converterHelper;
+        private readonly ICountryRepository _countryRepository;
 
         public FlightsController(
             IFlightRepository flightRepository,
-            IConverterHelper converterHelper
+            IConverterHelper converterHelper,
+            ICountryRepository countryRepository
             )
         {
             _flightRepository = flightRepository;
             _converterHelper = converterHelper;
+            _countryRepository = countryRepository;
         }
         public IActionResult Index()
         {
@@ -50,9 +53,10 @@ namespace TagusAir.Controllers
         {
             return View(new FlightViewModel
             {
+                DepartureTime = DateTime.Now,
+                ArrivalTime = DateTime.Now.AddHours(2),
                 Airplanes = _flightRepository.GetComboAirplanes(),
-                DepartureAirports = _flightRepository.GetComboAirports(),
-                ArrivalAirports = _flightRepository.GetComboAirports()
+                Countries = _countryRepository.GetComboCountries()
 
             });
         }
@@ -71,8 +75,9 @@ namespace TagusAir.Controllers
             }
 
             viewModel.Airplanes = _flightRepository.GetComboAirplanes();
-            viewModel.DepartureAirports = _flightRepository.GetComboAirports();
-            viewModel.ArrivalAirports = _flightRepository.GetComboAirports();
+            viewModel.Countries = _countryRepository.GetComboCountries();
+            viewModel.DepartureAirports = _countryRepository.GetComboAirports(viewModel.DepartureCountryId);
+            viewModel.ArrivalAirports = _countryRepository.GetComboAirports(viewModel.ArrivalCountryId);
 
             return View(viewModel);
         }
@@ -85,7 +90,7 @@ namespace TagusAir.Controllers
                 return NotFound();
             }
 
-            var flight = await _flightRepository.GetByIdAsync(id.Value);
+            var flight = await _flightRepository.GetFlightWithDetailsAsync(id.Value);
 
             if (flight == null)
             {
@@ -94,9 +99,13 @@ namespace TagusAir.Controllers
 
             var viewModel = _converterHelper.ToFlightViewModel(flight);
 
+            viewModel.DepartureCountryId = flight.DepartureAirport.CountryId;
+            viewModel.ArrivalCountryId = flight.ArrivalAirport.CountryId;
+
             viewModel.Airplanes = _flightRepository.GetComboAirplanes();
-            viewModel.DepartureAirports = _flightRepository.GetComboAirports();
-            viewModel.ArrivalAirports = _flightRepository.GetComboAirports();
+            viewModel.Countries = _countryRepository.GetComboCountries();
+            viewModel.DepartureAirports = _countryRepository.GetComboAirports(viewModel.DepartureCountryId);
+            viewModel.ArrivalAirports = _countryRepository.GetComboAirports(viewModel.ArrivalCountryId);
 
             return View(viewModel);
         }
@@ -155,6 +164,15 @@ namespace TagusAir.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [Route("Flights/GetAirportsAsync")]
+        public async Task<JsonResult> GetAirportsAsync(int countryId)
+        {
+            var country = await _countryRepository.GetCountryWithAirportsAsync(countryId);
 
+            return Json(country.Airports
+                .OrderBy(a => a.City)
+                .Select(a => new { a.Id, a.City, a.Name, a.IataCode }));
+        }
     }
 }

@@ -67,6 +67,7 @@ namespace TagusAir.Data
             {
                 list = _context.Airports
                     .Where(a => a.CountryId == countryId)
+                    .ToList()
                     .Select(a => new SelectListItem
                     {
                         Text = $"{a.City} - {a.Name} ({a.IataCode})",
