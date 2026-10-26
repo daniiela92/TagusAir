@@ -13,6 +13,8 @@ namespace TagusAir.Data
 
         Task<List<Ticket>> GetTicketsByUserAsync(string userId);
 
+        Task<bool> UserHasTicketsAsync(string userId);
+
 
     }
 }

@@ -33,9 +33,11 @@ namespace TagusAir.Data
                 IsUnique();
 
             var cascadeFKs = modelBuilder.Model
-                .GetEntityTypes()
-                .SelectMany(t => t.GetForeignKeys())
-                .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+     .GetEntityTypes()
+     .SelectMany(t => t.GetForeignKeys())
+     .Where(fk => !fk.IsOwnership
+               && fk.DeleteBehavior == DeleteBehavior.Cascade
+               && fk.DeclaringEntityType.ClrType.Namespace != "Microsoft.AspNetCore.Identity");
 
             foreach (var fk in cascadeFKs)
             {

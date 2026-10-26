@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using TagusAir.Data;
 using TagusAir.Data.Entities;
 using TagusAir.Helpers;
 using TagusAir.Models;
@@ -14,15 +15,18 @@ namespace TagusAir.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly IConverterHelper _converterHelper;
+        private readonly ITicketRepository _ticketRepository;
 
         public UsersController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
-            IConverterHelper converterHelper)
+            IConverterHelper converterHelper,
+            ITicketRepository ticketRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _converterHelper = converterHelper;
+            _ticketRepository = ticketRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -153,6 +157,49 @@ namespace TagusAir.Controllers
             }
 
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            return View(_converterHelper.ToEditUserViewModel(user));
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _userHelper.GetUserByIdAsync(id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var userHasTickets = await _ticketRepository.UserHasTicketsAsync(id);
+
+            if(userHasTickets)
+            {
+                ModelState.AddModelError(string.Empty, "This user has tickets and cannot be deleted.");
+                return View(_converterHelper.ToEditUserViewModel(user));
+            }
+
+            await _userHelper.DeleteUserAsync(user);
+
+            return RedirectToAction(nameof(Index));
+
         }
 
 
