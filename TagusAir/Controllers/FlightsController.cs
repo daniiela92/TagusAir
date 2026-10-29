@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TagusAir.Data;
 using TagusAir.Helpers;
@@ -11,16 +12,19 @@ namespace TagusAir.Controllers
         private readonly IFlightRepository _flightRepository;
         private readonly IConverterHelper _converterHelper;
         private readonly ICountryRepository _countryRepository;
+        private readonly ITicketRepository _ticketRepository;
 
         public FlightsController(
             IFlightRepository flightRepository,
             IConverterHelper converterHelper,
-            ICountryRepository countryRepository
+            ICountryRepository countryRepository,
+            ITicketRepository ticketRepository
             )
         {
             _flightRepository = flightRepository;
             _converterHelper = converterHelper;
             _countryRepository = countryRepository;
+            _ticketRepository = ticketRepository;
         }
         public IActionResult Index()
         {
@@ -148,19 +152,24 @@ namespace TagusAir.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (id == null)
+            var flight = await _flightRepository.GetFlightWithDetailsAsync(id);
+
+            if (flight == null)
             {
                 return NotFound();
             }
 
-            var flight = await _flightRepository.GetByIdAsync(id.Value);
+            var flightHasTickets = await _ticketRepository.FlightHasTicketsAsync(id);
 
-            if (flight != null)
+            if (flightHasTickets)
             {
-                await _flightRepository.DeleteAsync(flight);
+                ModelState.AddModelError(string.Empty, "This flight has sold tickets and cannot be deleted.");
+                return View(flight);
             }
+
+            await _flightRepository.DeleteAsync(flight);
             return RedirectToAction(nameof(Index));
         }
 

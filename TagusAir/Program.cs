@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TagusAir.Data;
 using TagusAir.Data.Entities;
 using TagusAir.Helpers;
@@ -31,6 +33,19 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 
 }).AddDefaultTokenProviders()
     .AddEntityFrameworkStores<DataContext>();
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(cfg =>
+    {
+        cfg.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Tokens:Issuer"],
+            ValidAudience = builder.Configuration["Tokens:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Tokens:Key"]))
+        };
+
+    });
 
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();

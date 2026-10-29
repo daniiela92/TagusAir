@@ -38,6 +38,11 @@ namespace TagusAir.Data
             return ticket;
         }
 
+        public async Task<bool> FlightHasTicketsAsync(int flightId)
+        {
+            return await _context.Tickets.AnyAsync(t => t.FlightId == flightId);
+        }
+
         public async Task<List<Seat>> GetAvailableSeatsAsync(int flightId)
         {
             var flight = await _context.Flights.FindAsync(flightId);

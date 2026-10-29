@@ -15,6 +15,8 @@ namespace TagusAir.Data
 
         Task<bool> UserHasTicketsAsync(string userId);
 
+        Task<bool> FlightHasTicketsAsync(int flightId);
+
 
     }
 }
