@@ -98,6 +98,43 @@ namespace TagusAir.Data
                 await _userHelper.AddUserToRoleAsync(employee, "Employee");
             }
 
+            // Criação de Customer
+
+            var customer = await _userHelper.GetUserByEmailAsync("customer@yopmail.com");
+
+            if (customer == null)
+            {
+                customer = new User
+                {
+                    FirstName = "Customer",
+                    LastName = "Teste",
+                    Email = "customer@yopmail.com",
+                    UserName = "customer@yopmail.com",
+                    PhoneNumber = "987654321",
+                    Passport = "PA1234"
+                };
+
+                var customerResult = await _userHelper.AddUserAsync(customer, "123456");
+
+                if (customerResult != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the customer user in seeder.");
+
+                }
+
+                await _userHelper.AddUserToRoleAsync(customer, "Customer");
+            }
+
+            var isCustomerInRole = await _userHelper.IsUserInRoleAsync(customer, "Customer");
+
+            if (!isCustomerInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(customer, "Customer");
+            }
+
+
+
+
 
 
             if (!_context.Countries.Any())
