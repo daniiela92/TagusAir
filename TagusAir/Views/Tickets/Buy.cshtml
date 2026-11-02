@@ -1,80 +1,125 @@
 ﻿@model TagusAir.Models.BuyTicketViewModel
 
 @{
-    ViewData["Title"] = "Buy Ticket";
+    ViewData["Title"] = "Buy ticket";
 }
 
-<h2>Buy Ticket</h2>
+<section class="py-6">
+    <div class="container">
 
-<div class="row">
-    <div class="col-md-6">
-        <dl class="row">
-            <dt class="col-sm-4">Flight</dt>
-            <dd class="col-sm-8">@Model.Flight.FlightNumber</dd>
+        <h2 class="fw-bold mb-5">Complete your booking</h2>
 
-            <dt class="col-sm-4">From</dt>
-            <dd class="col-sm-8">
-                @Model.Flight.DepartureAirport.City (@Model.Flight.DepartureAirport.IataCode)
-            </dd>
+        <div class="row g-4">
 
-            <dt class="col-sm-4">To</dt>
-            <dd class="col-sm-8">
-                @Model.Flight.ArrivalAirport.City (@Model.Flight.ArrivalAirport.IataCode)
-            </dd>
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <dt class="col-sm-4">Departure</dt>
-            <dd class="col-sm-8">@Model.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+                        <form asp-action="Buy" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-            <dt class="col-sm-4">Economy</dt>
-            <dd class="col-sm-8">@Model.Flight.BasePrice.ToString("C2")</dd>
+                            <input type="hidden" asp-for="FlightId" />
 
-            <dt class="col-sm-4">Business</dt>
-            <dd class="col-sm-8">@Model.Flight.BusinessPrice.ToString("C2")</dd>
-        </dl>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <h5 class="fw-bold mb-1">Your details</h5>
+                                <p class="text-900 mb-4">
+                                    We'll create an account for you so you can manage this booking later.
+                                </p>
 
-        <hr />
+                                <div class="row g-3 mb-4">
+                                    <div class="col-sm-6">
+                                        <label asp-for="FirstName" class="form-label fw-medium"></label>
+                                        <input asp-for="FirstName" class="form-control form-voyage-control" />
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    </div>
 
-        <form asp-action="Buy" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-sm-6">
+                                        <label asp-for="LastName" class="form-label fw-medium"></label>
+                                        <input asp-for="LastName" class="form-control form-voyage-control" />
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                    </div>
 
-            <input type="hidden" asp-for="FlightId" />
+                                    <div class="col-12">
+                                        <label asp-for="Email" class="form-label fw-medium"></label>
+                                        <input asp-for="Email" class="form-control form-voyage-control" placeholder="you@@example.com" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <p class="text-muted">
-                    We'll create an account for you with these details.
-                </p>
+                                <hr class="my-4" />
+                            }
 
-                <div class="form-group mb-3">
-                    <label asp-for="FirstName" class="control-label"></label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                            <h5 class="fw-bold mb-1">Choose your seat</h5>
+                            <p class="text-900 mb-4">
+                                Seats starting with E are economy, seats starting with B are business.
+                            </p>
+
+                            <div class="mb-4">
+                                <label asp-for="SeatId" class="form-label fw-medium">Seat</label>
+                                <select asp-for="SeatId" asp-items="Model.Seats" class="form-select form-voyage-select"></select>
+                                <span asp-validation-for="SeatId" class="text-danger"></span>
+                            </div>
+
+                            <div class="d-grid gap-2 d-sm-flex">
+                                <button type="submit" class="btn btn-secondary">
+                                    <i class="fas fa-check me-2"></i>Confirm purchase
+                                </button>
+                                <a asp-controller="Flights" asp-action="Index" class="btn btn-voyage-outline">
+                                    Back to flights
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
                 </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="LastName" class="control-label"></label>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-            }
-
-            <div class="form-group mb-3">
-                <label asp-for="SeatId" class="control-label"></label>
-                <select asp-for="SeatId" asp-items="Model.Seats" class="form-control"></select>
-                <span asp-validation-for="SeatId" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Confirm purchase</button>
-            <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary">Back to Flights</a>
-        </form>
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm bg-soft-primary">
+                    <div class="card-body p-5">
+
+                        <span class="badge bg-primary mb-3">@Model.Flight.FlightNumber</span>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div>
+                                <h4 class="fw-bold mb-0">@Model.Flight.DepartureAirport.IataCode</h4>
+                                <span class="text-900">@Model.Flight.DepartureAirport.City</span>
+                            </div>
+                            <i class="fas fa-plane text-primary mx-4"></i>
+                            <div>
+                                <h4 class="fw-bold mb-0">@Model.Flight.ArrivalAirport.IataCode</h4>
+                                <span class="text-900">@Model.Flight.ArrivalAirport.City</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-2 text-900">
+                            <i class="fas fa-calendar text-800 me-2"></i>
+                            @Model.Flight.DepartureTime.ToString("dd/MM/yyyy")
+                        </div>
+                        <div class="mb-4 text-900">
+                            <i class="fas fa-clock text-800 me-2"></i>
+                            @Model.Flight.DepartureTime.ToString("HH:mm") &ndash; @Model.Flight.ArrivalTime.ToString("HH:mm")
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-900">Economy</span>
+                            <span class="fw-bold">@Model.Flight.BasePrice.ToString("C2")</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-900">Business</span>
+                            <span class="fw-bold">@Model.Flight.BusinessPrice.ToString("C2")</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @{

@@ -4,68 +4,98 @@
     ViewData["Title"] = "Flights";
 }
 
+<section class="py-6">
+    <div class="container">
 
+        <div class="row align-items-center mb-5">
+            <div class="col">
+                <h2 class="fw-bold mb-0">Available flights</h2>
+            </div>
+            @if (User.IsInRole("Employee"))
+            {
+                <div class="col-auto">
+                    <a asp-action="Create" class="btn btn-secondary">
+                        <i class="fas fa-plus me-2"></i>New flight
+                    </a>
+                </div>
+            }
+        </div>
 
-@if (User.IsInRole("Employee"))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-}
-@if (Model != null && Model.Any())
-{
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Flight</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Departure</th>
-            <th>Arrival</th>
-            <th>Price</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>@item.FlightNumber</td>
-                <td>
-                    <img src="@item.DepartureAirport.Country.FlagImageUrl" style="width: 24px;" />
-                    @item.DepartureAirport.City (@item.DepartureAirport.IataCode)
-                </td>
-                <td>
-                    <img src="@item.ArrivalAirport.Country.FlagImageUrl" style="width: 24px;" />
-                    @item.ArrivalAirport.City (@item.ArrivalAirport.IataCode)
-                </td>
-                <td>@item.DepartureTime.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@item.ArrivalTime.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@item.BasePrice.ToString("C2")</td>
-                <td>
-                    <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@item.Id" class="btn btn-success btn-sm">Buy</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+            @foreach (var item in Model)
+            {
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
 
-                    @if (User.IsInRole("Employee"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                    }
-                </td>
-            </tr>
+                            <div class="col-lg-5">
+                                <span class="badge bg-soft-primary text-primary mb-2">@item.FlightNumber</span>
+                                <div class="d-flex align-items-center flex-wrap">
+                                    @if (!string.IsNullOrEmpty(item.DepartureAirport.Country.FlagImageUrl))
+                                    {
+                                        <img src="@item.DepartureAirport.Country.FlagImageUrl" style="width: 24px;" class="me-2" />
+                                    }
+                                    <span class="fw-bold text-1000">@item.DepartureAirport.City (@item.DepartureAirport.IataCode)</span>
+
+                                    <i class="fas fa-plane text-primary mx-3"></i>
+
+                                    @if (!string.IsNullOrEmpty(item.ArrivalAirport.Country.FlagImageUrl))
+                                    {
+                                        <img src="@item.ArrivalAirport.Country.FlagImageUrl" style="width: 24px;" class="me-2" />
+                                    }
+                                    <span class="fw-bold text-1000">@item.ArrivalAirport.City (@item.ArrivalAirport.IataCode)</span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="text-900">
+                                    <i class="fas fa-calendar text-800 me-2"></i>
+                                    @item.DepartureTime.ToString("dd/MM/yyyy")
+                                </div>
+                                <div class="text-900">
+                                    <i class="fas fa-clock text-800 me-2"></i>
+                                    @item.DepartureTime.ToString("HH:mm") &ndash; @item.ArrivalTime.ToString("HH:mm")
+                                    <span class="text-800 ms-2">
+                                        (@($"{item.Duration.Hours}h {item.Duration.Minutes:00}m"))
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 text-lg-end">
+                                <h4 class="text-primary fw-bolder mb-3">@item.BasePrice.ToString("C2")</h4>
+
+                                <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@item.Id"
+                                   class="btn btn-secondary btn-sm mb-1">Buy</a>
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-voyage-outline btn-sm mb-1">Details</a>
+
+                                @if (User.IsInRole("Employee"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                       class="btn btn-outline-secondary btn-sm mb-1">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"
+                                       class="btn btn-outline-danger btn-sm mb-1">Delete</a>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </tbody>
-</table>
-}
-else
-{
-    <div class="text-center py-8">
-        <i class="fas fa-plane-slash text-primary" style="font-size: 4rem;"></i>
-        <h3 class="mt-4 fw-bold">No flights found</h3>
-        <p class="text-900">
-            We couldn't find any flights for that date and airport.<br />
-            Try a different day, or browse everything we have available.
-        </p>
-        <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary mt-3">See all flights</a>
+        else
+        {
+            <div class="text-center py-8">
+                <i class="fas fa-plane-slash text-primary" style="font-size: 4rem;"></i>
+                <h3 class="mt-4 fw-bold">No flights found</h3>
+                <p class="text-900">
+                    We couldn't find any flights for that date and airport.<br />
+                    Try a different day, or browse everything we have available.
+                </p>
+                <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary mt-3">See all flights</a>
+            </div>
+        }
+
     </div>
-}
+</section>
