@@ -1,8 +1,51 @@
-﻿@{
+﻿@model IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="mt-5 py-0">
+    <div class="bg-holder w-50 bg-right d-none d-lg-block"
+         style="background-image:url(/voyage/assets/img/gallery/hero-section-1.png);"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+
+                <h1 class="display-3 text-1000 fw-normal">Your next journey</h1>
+                <h1 class="display-3 text-primary fw-bold">starts here</h1>
+
+                <div class="pt-5">
+                    <form class="row g-4" asp-controller="Flights" asp-action="Search" method="get">
+
+                        <div class="col-sm-12 col-xl-10">
+                            <div class="input-group-icon">
+                                <select class="form-select form-voyage-select input-box"
+                                        name="originAirportId" asp-items="Model"></select>
+                                <span class="nav-link-icon text-800 fs--1 input-box-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-xl-10">
+                            <div class="input-group-icon">
+                                <input class="form-control input-box form-voyage-control"
+                                       name="date" type="date" />
+                                <span class="nav-link-icon text-800 fs--1 input-box-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-10 d-grid mt-5">
+                            <button class="btn btn-secondary" type="submit">Search Flights</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

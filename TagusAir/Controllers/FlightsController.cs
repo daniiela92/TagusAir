@@ -31,6 +31,13 @@ namespace TagusAir.Controllers
             return View(_flightRepository.GetAvailableFlights());
         }
 
+        public IActionResult Search(DateTime? date, int? originAirportId)
+        {
+            var flights = _flightRepository.SearchFlights(date, originAirportId);
+
+            return View("Index", flights);
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

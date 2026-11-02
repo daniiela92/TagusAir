@@ -2,86 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TagusAir</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="~/voyage/assets/css/theme.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TagusAir.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TagusAir</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    <main class="main" id="top">
+
+        <nav class="navbar navbar-expand-lg navbar-light py-3 d-block">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <span class="fw-bold text-primary">TagusAir</span>
+                </a>
+                <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto pt-2 pt-lg-0 font-base">
+
+                        <li class="nav-item px-1">
+                            <a class="nav-link fw-medium text-nowrap" asp-controller="Home" asp-action="Index">
+                                <span class="nav-link-icon text-800 me-1 fas fa-home"></span>
+                                <span class="nav-link-text">Home</span>
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                        <li class="nav-item px-1">
+                            <a class="nav-link fw-medium text-nowrap" asp-controller="Flights" asp-action="Index">
+                                <span class="nav-link-icon text-800 me-1 fas fa-plane"></span>
+                                <span class="nav-link-text">Flights</span>
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Flights" asp-action="Index">Flights</a>
-                        </li>
+
                         @if (User.Identity.IsAuthenticated)
                         {
-
                             @if (User.IsInRole("Admin"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Airplanes" asp-action="Index">Airplanes</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
+                                <li class="nav-item dropdown px-1">
+                                    <a class="nav-link fw-medium text-nowrap dropdown-toggle" href="#" id="managementDropdown"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="nav-link-icon text-800 me-1 fas fa-cog"></span>
+                                        <span class="nav-link-text">Management</span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="managementDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Airplanes" asp-action="Index">Airplanes</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Countries" asp-action="Index">Countries</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
+                            <li class="nav-item px-1">
+                                <a class="nav-link fw-medium text-nowrap" asp-controller="Tickets" asp-action="MyTickets">
+                                    <span class="nav-link-icon text-800 me-1 fas fa-ticket-alt"></span>
+                                    <span class="nav-link-text">My Tickets</span>
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                            </li>
+                        }
+
+                    </ul>
+
+                    <form>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a class="btn text-800 order-1 order-lg-0 me-2 text-nowrap" asp-controller="Account" asp-action="ChangeUser">
+                                @User.Identity.Name
+                            </a>
+                            <a class="btn btn-voyage-outline order-0" asp-controller="Account" asp-action="Logout">
+                                <span class="text-primary">Logout</span>
+                            </a>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
+                            <a class="btn text-800 order-1 order-lg-0 me-2" asp-controller="Account" asp-action="Register">
+                                Register
+                            </a>
+                            <a class="btn btn-voyage-outline order-0" asp-controller="Account" asp-action="Login">
+                                <span class="text-primary">Sign in</span>
+                            </a>
                         }
-                    </ul>
+                    </form>
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - TagusAir - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+        @RenderBody()
+
+        <footer class="py-4 border-top">
+            <div class="container text-center text-900">
+                &copy; 2026 TagusAir &middot;
+                <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+
+    </main>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/voyage/vendors/@@popperjs/popper.min.js"></script>
+    <script src="~/voyage/vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="~/voyage/vendors/is/is.min.js"></script>
+    <script src="~/voyage/vendors/fontawesome/all.min.js"></script>
+    <script src="~/voyage/assets/js/theme.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
