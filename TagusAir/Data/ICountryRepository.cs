@@ -23,6 +23,6 @@ namespace TagusAir.Data
 
         IEnumerable<SelectListItem> GetComboAirports(int countryId);
 
-        IQueryable<Airport> GetAllAirports();
+       
     }
 }

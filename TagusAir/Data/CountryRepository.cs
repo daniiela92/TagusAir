@@ -58,12 +58,6 @@ namespace TagusAir.Data
             return await _context.Airports.FindAsync(id);
         }
 
-        public IQueryable<Airport> GetAllAirports()
-        {
-            var airports = _context.Airports.Include(a => a.Country);
-
-            return airports;
-        }
 
         public IEnumerable<SelectListItem> GetComboAirports(int countryId)
         {

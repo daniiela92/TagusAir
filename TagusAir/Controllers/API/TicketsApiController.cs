@@ -8,7 +8,7 @@ using TagusAir.Helpers;
 
 namespace TagusAir.Controllers.API
 {
-    [Route("api/mytickets")]
+    [Route("api/tickets")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TicketsApiController : ControllerBase
@@ -53,6 +53,94 @@ namespace TagusAir.Controllers.API
 
             return Ok(futureFlights);
 
+        }
+
+
+        [HttpPost("{flightId}/{seatId}")]
+        public async Task<IActionResult> BuyTicket(int flightId, int seatId)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var isSeatAvailable = await _ticketRepository.IsSeatAvailableAsync(flightId, seatId);
+
+            if (!isSeatAvailable)
+            {
+                return BadRequest("This seat is no longer available.");
+            }
+
+            var boughtTicket = await _ticketRepository.BuyTicketsAsync(flightId, seatId, user.Id);
+
+
+            var result = new
+            {
+                boughtTicket.Id,
+                boughtTicket.Price,
+                boughtTicket.PurchaseDate
+            };
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelTicket(int id)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+
+            if (ticket.UserId != user.Id)
+            {
+                return Forbid();
+            }
+
+            await _ticketRepository.DeleteAsync(ticket);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/{seatId}")]
+        public async Task<IActionResult> ChangeSeat(int id, int seatId)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            if (ticket.UserId != user.Id)
+            {
+                return Forbid();
+            }
+
+            if(ticket.SeatId == seatId)
+            {
+                return BadRequest("You are already assigned to this seat.");
+            }
+
+            var isSeatAvailable = await _ticketRepository.IsSeatAvailableAsync(ticket.FlightId, seatId);
+            if (!isSeatAvailable)
+            {
+                return BadRequest("This seat is no longer available.");
+            }
+            ticket.SeatId = seatId;
+            await _ticketRepository.UpdateAsync(ticket);
+            return NoContent();
         }
     }
 }

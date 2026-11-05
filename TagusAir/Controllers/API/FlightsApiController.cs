@@ -26,7 +26,7 @@ namespace TagusAir.Controllers.API
         [HttpGet]
         public IActionResult GetFlights()
         {
-            var flights = _flightRepository.GetAllWithDetails()
+            var flights = _flightRepository.GetAvailableFlights()
                 .ToList()
                 .Select(f => new
                 {
@@ -71,53 +71,22 @@ namespace TagusAir.Controllers.API
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(Flight newFlight)
+        [HttpGet("{id}/seats")]
+        public async Task<IActionResult> GetAvailableSeats(int id)
         {
-            await _flightRepository.CreateAsync(newFlight);
+            var seats = await _ticketRepository.GetAvailableSeatsAsync(id);
 
-            return Ok(newFlight);
-        }
-
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Flight flight)
-        {
-            if(id != flight.Id)
-            {
-                return BadRequest();
-            }
-
-            var flightExists = await _flightRepository.ExistAsync(id);
-
-            if(!flightExists)
-            {
-                return NotFound();
-            }
-
-            await _flightRepository.UpdateAsync(flight);
-            return NoContent(); 
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
+            var availableSeats = seats
+                .Select(s => new
+                {
+                    s.Id,
+                    Name= $"{s.Code} - {s.Class}"
+                })
+                .ToList();
 
 
-            var flight = await _flightRepository.GetByIdAsync(id);
-
-            if (flight == null)
-            {
-                return NotFound();
-            }
-
-            if(await _ticketRepository.FlightHasTicketsAsync(id))
-            {
-                return BadRequest("This flight has sold tickets and cannot be deleted.");
-            }
-
-            await _flightRepository.DeleteAsync(flight);
-            return NoContent();
+            
+            return Ok(availableSeats);
         }
 
     }
