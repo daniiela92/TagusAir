@@ -32,7 +32,7 @@ namespace TagusAir.Data
 
             // Criação de admin 
 
-            var admin = await _userHelper.GetUserByEmailAsync("danielap@yopmail.com");
+            var admin = await _userHelper.GetUserByEmailAsync("admin@yopmail.com");
 
             if (admin == null)
             {
@@ -40,8 +40,8 @@ namespace TagusAir.Data
                 {
                     FirstName = "Daniela",
                     LastName = "Pais",
-                    Email = "danielap@yopmail.com",
-                    UserName = "danielap@yopmail.com",
+                    Email = "admin@yopmail.com",
+                    UserName = "admin@yopmail.com",
                     PhoneNumber = "912345678",
 
                 };
