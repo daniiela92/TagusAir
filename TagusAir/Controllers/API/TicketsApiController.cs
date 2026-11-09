@@ -40,6 +40,7 @@ namespace TagusAir.Controllers.API
             var futureFlights = tickets.Where(t => t.Flight.DepartureTime > DateTime.Now)
                 .Select(t => new
                 {
+                    t.Id,
                     t.Flight.FlightNumber,
                     Origin = $"{t.Flight.DepartureAirport.City} ({t.Flight.DepartureAirport.IataCode})",
                     Destination = $"{t.Flight.ArrivalAirport.City} ({t.Flight.ArrivalAirport.IataCode})",
