@@ -1,0 +1,63 @@
+﻿@model TagusAir.Data.Entities.Ticket
+
+@{
+    ViewData["Title"] = "Cancel ticket";
+}
+
+<section class="py-6">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+
+                        <h2 class="fw-bold mb-1">Cancel this ticket?</h2>
+                        <p class="text-900 mb-4">This cannot be undone. The seat will be released for other passengers.</p>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div>
+                                <h4 class="fw-bold mb-0">@Model.Flight.DepartureAirport.IataCode</h4>
+                                <span class="text-900">@Model.Flight.DepartureAirport.City</span>
+                            </div>
+                            <i class="fas fa-plane text-primary mx-4"></i>
+                            <div>
+                                <h4 class="fw-bold mb-0">@Model.Flight.ArrivalAirport.IataCode</h4>
+                                <span class="text-900">@Model.Flight.ArrivalAirport.City</span>
+                            </div>
+                        </div>
+
+                        <dl class="row mb-4">
+                            <dt class="col-sm-4 text-900">Flight</dt>
+                            <dd class="col-sm-8 fw-bold">@Model.Flight.FlightNumber</dd>
+
+                            <dt class="col-sm-4 text-900">Departure</dt>
+                            <dd class="col-sm-8 fw-bold">@Model.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            <dt class="col-sm-4 text-900">Seat</dt>
+                            <dd class="col-sm-8 fw-bold">@Model.Seat.Code &middot; @Model.Seat.Class</dd>
+
+                            <dt class="col-sm-4 text-900">Price paid</dt>
+                            <dd class="col-sm-8 fw-bold">@Model.Price.ToString("C2")</dd>
+                        </dl>
+
+                        <form asp-action="Cancel" method="post">
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="d-grid gap-2 d-sm-flex">
+                                <button type="submit" class="btn btn-danger">
+                                    Yes, cancel this ticket
+                                </button>
+                                <a asp-action="MyTickets" class="btn btn-voyage-outline">
+                                    Keep my ticket
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -186,5 +186,49 @@ namespace TagusAir.Controllers
             return createdUser;
 
         }
+
+        
+        [Authorize]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+
+            var ticket = tickets.FirstOrDefault(t => t.Id == id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return View(ticket);
+        }
+
+        [HttpPost]
+        [ActionName("Cancel")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> CancelConfirmed(int id)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+
+            var ticket = tickets.FirstOrDefault(t => t.Id == id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            await _ticketRepository.DeleteAsync(ticket);
+
+            return RedirectToAction(nameof(MyTickets));
+
+        }
+
+
     }
 }
