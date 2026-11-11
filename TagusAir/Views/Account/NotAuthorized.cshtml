@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Not authorized";
+}
+
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+
+                <span class="fas fa-lock text-primary" style="font-size: 4rem;"></span>
+
+                <h1 class="fw-bold mt-4 mb-3">You don't have access to this area</h1>
+
+                <p class="text-900 mb-5">
+                    Your account doesn't have permission to open this page.
+                    If you believe this is a mistake, please contact us.
+                </p>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                        Back to home
+                    </a>
+                    <a asp-controller="Flights" asp-action="Index" class="btn btn-voyage-outline">
+                        Browse flights
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>  

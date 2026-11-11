@@ -318,5 +318,11 @@ namespace TagusAir.Controllers
 
             return BadRequest();
         }
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
     }
 }
