@@ -138,7 +138,7 @@ namespace TagusAir.Controllers
 
                 if (user == null)
                 {
-                    return NotFound();
+                    return new NotFoundViewResult("UserNotFound");
                 }
 
                 user.FirstName = viewModel.FirstName;
@@ -163,14 +163,14 @@ namespace TagusAir.Controllers
         {
             if(id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             var user = await _userHelper.GetUserByIdAsync(id);
 
             if(user == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             return View(_converterHelper.ToEditUserViewModel(user));
@@ -185,7 +185,7 @@ namespace TagusAir.Controllers
 
             if(user == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             var userHasTickets = await _ticketRepository.UserHasTicketsAsync(id);
@@ -201,8 +201,5 @@ namespace TagusAir.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-
-
-
     }
 }

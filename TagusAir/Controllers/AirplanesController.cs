@@ -38,14 +38,14 @@ public class AirplanesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
         var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
 
         if (airplane == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
         return View(airplane);
@@ -86,14 +86,14 @@ public class AirplanesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
         var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
 
         if (airplane == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
         return View(_converterHelper.ToAirplaneViewModel(airplane));
@@ -143,15 +143,16 @@ public class AirplanesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
         var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
 
         if (airplane == null)
         {
-            return NotFound();
+            return new NotFoundViewResult("AirplaneNotFound");
         }
+         
 
         return View(airplane);
     }

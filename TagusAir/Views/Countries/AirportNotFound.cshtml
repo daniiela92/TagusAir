@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Airport not found";
+}
+
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+
+                <span class="fas fa-map-marker-alt text-primary" style="font-size: 4rem;"></span>
+                <h1 class="fw-bold mt-4 mb-3">We couldn't find that airport</h1>
+                <p class="text-900 mb-5">
+                    The airport you're looking for doesn't exist, or it may have been removed.
+                </p>
+
+                <a asp-controller="Countries" asp-action="Index" class="btn btn-secondary">
+                    See all countries
+                </a>
+
+            </div>
+        </div>
+    </div>
+</section>

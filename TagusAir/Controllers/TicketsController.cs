@@ -33,14 +33,14 @@ namespace TagusAir.Controllers
 
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             var flight = await _flightRepository.GetFlightWithDetailsAsync(id.Value);
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             var viewModel = new BuyTicketViewModel
@@ -199,7 +199,7 @@ namespace TagusAir.Controllers
 
             if (ticket == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             return View(ticket);
@@ -220,7 +220,7 @@ namespace TagusAir.Controllers
 
             if (ticket == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("TicketNotFound");
             }
 
             await _ticketRepository.DeleteAsync(ticket);

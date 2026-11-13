@@ -33,14 +33,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetCountryWithAirportsAsync(id.Value);
 
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             return View(country);
@@ -77,14 +77,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
 
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             return View(_converterHelper.ToCountryViewModel(country));
@@ -116,14 +116,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
 
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             return View(country);
@@ -147,14 +147,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var country = await _countryRepository.GetByIdAsync(id.Value);
 
             if (country == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CountryNotFound");
             }
 
             var model = new AirportViewModel { CountryId = country.Id };
@@ -178,14 +178,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirportNotFound");
             }
 
             var airport = await _countryRepository.GetAirportAsync(id.Value);
 
             if (airport == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirportNotFound");
             }
 
             return View(_converterHelper.ToAirportViewModel(airport));
@@ -216,14 +216,14 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirportNotFound");
             }
 
             var airport = await _countryRepository.GetAirportAsync(id.Value);
 
             if (airport == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirportNotFound");
             }
 
             var countryId = await _countryRepository.DeleteAirportAsync(airport);

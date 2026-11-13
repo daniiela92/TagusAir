@@ -42,7 +42,7 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             var flight = await _flightRepository.GetFlightWithDetailsAsync(id.Value);
@@ -50,7 +50,7 @@ namespace TagusAir.Controllers
             if (flight == null)
             {
 
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             return View(flight);
@@ -98,14 +98,15 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             var flight = await _flightRepository.GetFlightWithDetailsAsync(id.Value);
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
+
             }
 
             var viewModel = _converterHelper.ToFlightViewModel(flight);
@@ -145,13 +146,13 @@ namespace TagusAir.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
             var flight = await _flightRepository.GetFlightWithDetailsAsync(id.Value);
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
             return View(flight);
         }
@@ -165,7 +166,7 @@ namespace TagusAir.Controllers
 
             if (flight == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("FlightNotFound");
             }
 
             var flightHasTickets = await _ticketRepository.FlightHasTicketsAsync(id);
