@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 
 namespace TagusAir.Models
 {
@@ -17,6 +18,11 @@ namespace TagusAir.Models
 
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        public string? ImageUrl { get; set; }
+         
 
 
     }

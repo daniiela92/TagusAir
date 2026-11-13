@@ -22,6 +22,8 @@ namespace TagusAir.Models
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
+        public IFormFile? ImageFile { get; set; }
+
         [Required]
         [MinLength(6)]
         public string Password { get; set; }

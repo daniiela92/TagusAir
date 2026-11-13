@@ -65,6 +65,7 @@ namespace TagusAir.Helpers
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Passport = user.Passport,
+                ImageUrl = user.ImageUrl,
             };
         }
 

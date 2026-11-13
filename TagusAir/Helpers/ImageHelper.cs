@@ -15,6 +15,13 @@ namespace TagusAir.Helpers
                 $"wwwroot\\images\\{folder}",
                 file);
 
+            var directory = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             using (FileStream stream = new FileStream(path, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);

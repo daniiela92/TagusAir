@@ -17,17 +17,20 @@ namespace TagusAir.Controllers
         private readonly IMailHelper _mailHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IConfiguration _configuration;
+        private readonly IImageHelper _imageHelper;
 
         public AccountController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
             IConverterHelper converterHelper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IImageHelper imageHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _converterHelper = converterHelper;
             _configuration = configuration;
+            _imageHelper = imageHelper;
         }
 
         public IActionResult Login()
@@ -76,39 +79,47 @@ namespace TagusAir.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
+        public async Task<IActionResult> Register(RegisterNewUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                string path = string.Empty;
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
+                }
+
+                var user = await _userHelper.GetUserByEmailAsync(viewModel.Username);
                 if (user == null)
                 {
                     user = new User
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Email = model.Username,
-                        UserName = model.Username,
-                        PhoneNumber = model.PhoneNumber,
-                        Passport = model.Passport
+                        FirstName = viewModel.FirstName,
+                        LastName = viewModel.LastName,
+                        Email = viewModel.Username,
+                        UserName = viewModel.Username,
+                        PhoneNumber = viewModel.PhoneNumber,
+                        Passport = viewModel.Passport,
+                        ImageUrl = path,
                     };
 
-                    var result = await _userHelper.AddUserAsync(user, model.Password);
+                    var result = await _userHelper.AddUserAsync(user, viewModel.Password);
 
 
                     if (result != IdentityResult.Success)
                     {
                         ModelState.AddModelError(string.Empty, "The user couldn't be created.");
-                        return View(model);
+                        return View(viewModel);
                     }
 
                     await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                     var loginViewModel = new LoginViewModel
                     {
-                        Password = model.Password,
+                        Password = viewModel.Password,
                         RememberMe = false,
-                        Username = model.Username
+                        Username = viewModel.Username
                     };
 
                     var result2 = await _userHelper.LoginAsync(loginViewModel);
@@ -119,13 +130,13 @@ namespace TagusAir.Controllers
                     }
 
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
-                    return View(model);
+                    return View(viewModel);
                 }
 
                 ModelState.AddModelError(string.Empty, "This email is already registered.");
             }
 
-            return View(model);
+            return View(viewModel);
         }
 
         [Authorize]
@@ -142,7 +153,7 @@ namespace TagusAir.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -150,16 +161,25 @@ namespace TagusAir.Controllers
 
                 if (user != null)
                 {
-                    user.FirstName = model.FirstName;
-                    user.LastName = model.LastName;
-                    user.Passport = model.Passport;
-                    user.PhoneNumber = model.PhoneNumber;
+
+                    if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                    {
+                        user.ImageUrl = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
+                    }
+
+
+                    user.FirstName = viewModel.FirstName;
+                    user.LastName = viewModel.LastName;
+                    user.Passport = viewModel.Passport;
+                    user.PhoneNumber = viewModel.PhoneNumber;
 
                     var response = await _userHelper.UpdateUserAsync(user);
 
                     if (response.Succeeded)
                     {
+
                         ViewBag.UserMessage = "User updated!";
+                        viewModel.ImageUrl = user.ImageUrl;
                     }
                     else
                     {
@@ -172,7 +192,7 @@ namespace TagusAir.Controllers
                 }
             }
 
-            return View(model);
+            return View(viewModel);
         }
 
         [Authorize]

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using TagusAir.Helpers
+@inject IUserHelper UserHelper
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,7 +19,7 @@
         <nav class="navbar navbar-expand-lg navbar-light py-3 d-block">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <span class="fw-bold text-primary">TagusAir</span>
+                    <span class="fw-bold text-primary">Tagus Air</span>
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -78,9 +81,25 @@
                     <form>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="btn text-800 order-1 order-lg-0 me-2 text-nowrap" asp-controller="Account" asp-action="ChangeUser">
+                            var currentUser = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
+
+                            <a class="btn text-800 order-1 order-lg-0 me-2 text-nowrap d-inline-flex align-items-center"
+                               asp-controller="Account" asp-action="ChangeUser">
+
+                                @if (currentUser != null && !string.IsNullOrEmpty(currentUser.ImageUrl))
+                                {
+                                    <img src="@currentUser.ImageUrl"
+                                         class="rounded-circle me-2"
+                                         style="width: 32px; height: 32px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <span class="fas fa-user-circle me-2" style="font-size: 32px;"></span>
+                                }
+
                                 @User.Identity.Name
                             </a>
+
                             <a class="btn btn-voyage-outline order-0" asp-controller="Account" asp-action="Logout">
                                 <span class="text-primary">Logout</span>
                             </a>
@@ -114,8 +133,8 @@
     <script src="~/voyage/vendors/@@popperjs/popper.min.js"></script>
     <script src="~/voyage/vendors/bootstrap/bootstrap.min.js"></script>
     <script src="~/voyage/vendors/is/is.min.js"></script>
-    <script src="~/voyage/vendors/fontawesome/all.min.js"></script>
     <script src="~/voyage/assets/js/theme.js"></script>
+    <script src="~/voyage/vendors/fontawesome/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
