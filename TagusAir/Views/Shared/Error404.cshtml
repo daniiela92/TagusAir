@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Page not found";
+}
+
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+
+                <h1 class="fw-bolder text-primary" style="font-size: 6rem;">404</h1>
+
+                <h2 class="fw-bold mb-3">This page doesn't exist</h2>
+
+                <p class="text-900 mb-5">
+                    The address you typed may be wrong, or the page may have been moved.
+                </p>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to home</a>
+                    <a asp-controller="Flights" asp-action="Index" class="btn btn-voyage-outline">Browse flights</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
