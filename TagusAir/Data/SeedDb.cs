@@ -142,7 +142,7 @@ namespace TagusAir.Data
                 _context.Countries.Add(new Country
                 {
                     Name = "Portugal",
-                    FlagImageUrl = "/images/no_image.png",
+                    FlagImageUrl = "/images/flags/pt.png",
                     Airports = new List<Airport>
                 {
                     new Airport { City = "Lisboa", Name = "Humberto Delgado", IataCode = "LIS" },
@@ -154,7 +154,7 @@ namespace TagusAir.Data
                 _context.Countries.Add(new Country
                 {
                     Name = "Spain",
-                    FlagImageUrl = "/images/no_image.png",
+                    FlagImageUrl = "/images/flags/es.png",
                     Airports = new List<Airport>
                 {
                     new Airport { City = "Madrid", Name = "Adolfo Suárez Barajas", IataCode = "MAD" },
@@ -165,7 +165,7 @@ namespace TagusAir.Data
                 _context.Countries.Add(new Country
                 {
                     Name = "France",
-                    FlagImageUrl = "/images/no_image.png",
+                    FlagImageUrl = "/images/flags/fr.png",
                     Airports = new List<Airport>
                 {
                     new Airport { City = "Paris", Name = "Charles de Gaulle", IataCode = "CDG" }
@@ -175,7 +175,7 @@ namespace TagusAir.Data
                 _context.Countries.Add(new Country
                 {
                     Name = "United Kingdom",
-                    FlagImageUrl = "/images/no_image.png",
+                    FlagImageUrl = "/images/flags/gb.png",
                     Airports = new List<Airport>
                 {
                      new Airport { City = "London", Name = "Heathrow", IataCode = "LHR" },
