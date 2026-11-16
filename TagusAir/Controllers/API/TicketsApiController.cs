@@ -42,6 +42,7 @@ namespace TagusAir.Controllers.API
                 {
                     t.Id,
                     t.Flight.FlightNumber,
+                    t.FlightId,
                     Origin = $"{t.Flight.DepartureAirport.City} ({t.Flight.DepartureAirport.IataCode})",
                     Destination = $"{t.Flight.ArrivalAirport.City} ({t.Flight.ArrivalAirport.IataCode})",
                     t.Flight.DepartureTime,
