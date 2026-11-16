@@ -83,16 +83,18 @@ namespace TagusAir.Controllers
         {
             if (ModelState.IsValid)
             {
-                string path = string.Empty;
-
-                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
-                {
-                    path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
-                }
-
                 var user = await _userHelper.GetUserByEmailAsync(viewModel.Username);
+
                 if (user == null)
                 {
+
+                    string path = string.Empty;
+
+                    if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                    {
+                        path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
+                    }
+
                     user = new User
                     {
                         FirstName = viewModel.FirstName,

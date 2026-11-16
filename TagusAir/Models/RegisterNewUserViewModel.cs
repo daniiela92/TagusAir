@@ -22,6 +22,7 @@ namespace TagusAir.Models
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
+        [Display(Name = "Profile Picture")]
         public IFormFile? ImageFile { get; set; }
 
         [Required]
