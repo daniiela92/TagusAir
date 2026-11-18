@@ -1,21 +1,48 @@
-﻿@model List<TagusAir.Data.Entities.Ticket>
+﻿@model IEnumerable<TagusAir.Data.Entities.Ticket>
 
 @{
-    ViewData["Title"] = "My Tickets";
+    var isEmployee = User.IsInRole("Employee");
+
+    ViewData["Title"] = isEmployee ? "Flight history" : "My Tickets";
 }
 
 <section class="py-6">
     <div class="container">
 
-        <h2 class="fw-bold mb-5">My tickets</h2>
+        <h2 class="fw-bold mb-5">@(isEmployee ? "Flight history" : "My tickets")</h2>
 
-        @if (Model.Count == 0)
+        @if (isEmployee)
+        {
+            <form asp-action="MyTickets" method="get" class="row g-2 mb-4">
+                <div class="col-sm-6 col-lg-4">
+                    <input type="text" name="search" value="@ViewBag.Search"
+                           class="form-control form-voyage-control"
+                           placeholder="Search by passenger name" />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                </div>
+
+                @if (!string.IsNullOrEmpty((string)ViewBag.Search))
+                {
+                    <div class="col-auto">
+                        <a asp-action="MyTickets" class="btn btn-outline-secondary">Clear</a>
+                    </div>
+                }
+            </form>
+        }
+
+        @if (!Model.Any())
         {
             <div class="text-center py-8">
                 <i class="fas fa-ticket-alt text-primary" style="font-size: 4rem;"></i>
-                <h3 class="mt-4 fw-bold">No tickets yet</h3>
-                <p class="text-900">When you book a flight, your tickets will show up here.</p>
-                <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary mt-3">Browse flights</a>
+                <h3 class="mt-4 fw-bold">@(isEmployee ? "No tickets found" : "No tickets yet")</h3>
+
+                @if (!isEmployee)
+                {
+                    <p class="text-900">When you book a flight, your tickets will show up here.</p>
+                    <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary mt-3">Browse flights</a>
+                }
             </div>
         }
         else
@@ -49,6 +76,14 @@
                                     <i class="fas fa-calendar text-800 me-2"></i>
                                     @item.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
                                 </div>
+
+                                @if (isEmployee && item.User != null)
+                                {
+                                    <div class="text-900">
+                                        <i class="fas fa-user text-800 me-2"></i>
+                                        @item.User.FirstName @item.User.LastName
+                                    </div>
+                                }
                             </div>
 
                             <div class="col-md-3">
@@ -71,10 +106,13 @@
                                 {
                                     <span class="badge bg-primary p-2">Upcoming</span>
 
-                                    <div class="mt-2">
-                                        <a asp-action="Cancel" asp-route-id="@item.Id"
-                                           class="btn btn-outline-danger btn-sm">Cancel</a>
-                                    </div>
+                                    @if (!isEmployee)
+                                    {
+                                        <div class="mt-2">
+                                            <a asp-action="Cancel" asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm">Cancel</a>
+                                        </div>
+                                    }
                                 }
 
                                 <div class="text-800 fs--1 mt-2">

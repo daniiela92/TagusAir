@@ -67,16 +67,16 @@ namespace TagusAir.Data
 
             // Criação de funcionário
 
-            var employee = await _userHelper.GetUserByEmailAsync("funcionario@yopmail.com");
+            var employee = await _userHelper.GetUserByEmailAsync("employee@yopmail.com");
 
             if (employee == null)
             {
                 employee = new User
                 {
-                    FirstName = "Funcionario",
+                    FirstName = "Employee",
                     LastName = "Teste",
-                    Email = "funcionario@yopmail.com",
-                    UserName = "funcionario@yopmail.com",
+                    Email = "employee@yopmail.com",
+                    UserName = "employee@yopmail.com",
                     PhoneNumber = "912345678",
 
                 };

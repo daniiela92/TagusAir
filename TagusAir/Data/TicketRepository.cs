@@ -1,15 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 
 namespace TagusAir.Data
 {
     public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
     {
         private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public TicketRepository(DataContext context) : base(context)
+        public TicketRepository(DataContext context, IUserHelper userHelper) : base(context)
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         public async Task<Ticket> BuyTicketsAsync(int flightId, int seatId, string userId)
@@ -65,6 +68,37 @@ namespace TagusAir.Data
 
 
 
+        }
+
+        public async Task<IQueryable<Ticket>> GetTicketsAsync(string userName)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(userName);
+
+            if (user == null)
+            {
+                return null!;
+            }
+
+            if(await _userHelper.IsUserInRoleAsync(user, "Employee")) 
+            {
+                return _context.Tickets
+                    .Include(t => t.Seat)
+                    .Include(t => t.Flight)
+                    .ThenInclude(f => f.DepartureAirport)
+                    .Include(t => t.Flight)
+                    .ThenInclude(f => f.ArrivalAirport)
+                    .Include(t => t.User)
+                    .OrderByDescending(t => t.Flight.DepartureTime);
+            }
+
+            return _context.Tickets
+                    .Include(t => t.Seat)
+                    .Include(t => t.Flight)
+                    .ThenInclude(f => f.DepartureAirport)
+                    .Include(t => t.Flight)
+                    .ThenInclude(f => f.ArrivalAirport)
+                    .Where(t => t.UserId == user.Id)
+                    .OrderByDescending(t => t.Flight.DepartureTime);
         }
 
         public async Task<List<Ticket>> GetTicketsByUserAsync(string userId)

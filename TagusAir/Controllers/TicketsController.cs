@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using TagusAir.Data;
 using TagusAir.Data.Entities;
 using TagusAir.Helpers;
@@ -120,10 +121,16 @@ namespace TagusAir.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> MyTickets()
+        public async Task<IActionResult> MyTickets(string search)
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var list = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+            var list = await _ticketRepository.GetTicketsAsync(this.User.Identity.Name);
+            if(!string.IsNullOrEmpty(search))
+            {
+                list = list.Where(t => (t.User.FirstName + " " + t.User.LastName).Contains(search));
+            }
+
+            ViewBag.Search = search;
+
             return View(list);
         }
 
