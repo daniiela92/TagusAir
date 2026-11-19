@@ -16,17 +16,20 @@ namespace TagusAir.Controllers
         private readonly IMailHelper _mailHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly ITicketRepository _ticketRepository;
+        private readonly IImageHelper _imageHelper;
 
         public UsersController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
             IConverterHelper converterHelper,
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository,
+            IImageHelper imageHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _converterHelper = converterHelper;
             _ticketRepository = ticketRepository;
+            _imageHelper = imageHelper;
         }
         public async Task<IActionResult> Index()
         {
@@ -58,6 +61,12 @@ namespace TagusAir.Controllers
                     ModelState.AddModelError(string.Empty, "There is already an account registered with this email.");
                     return View(viewModel);
                 }
+                string path = string.Empty;
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
+                }
 
                 User createdUser = new User
                 {
@@ -66,6 +75,7 @@ namespace TagusAir.Controllers
                     Email = viewModel.Email,
                     UserName = viewModel.Email,
                     PhoneNumber = viewModel.PhoneNumber,
+                    ImageUrl = path,
                 };
 
                 var generatedPassword = Guid.NewGuid().ToString();
@@ -145,6 +155,11 @@ namespace TagusAir.Controllers
                 user.LastName = viewModel.LastName;
                 user.PhoneNumber = viewModel.PhoneNumber;
                 user.Passport = viewModel.Passport;
+
+                if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+                {
+                    user.ImageUrl = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
+                }
 
                 var result = await _userHelper.UpdateUserAsync(user);
 

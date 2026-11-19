@@ -12,9 +12,10 @@
 
 <h3>Employees</h3>
 
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone Number</th>
@@ -25,6 +26,17 @@
         @foreach (var item in Model.Employees)
         {
             <tr>
+                <td style="width: 56px;">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="rounded-circle"
+                             style="width: 40px; height: 40px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span class="fas fa-user-circle text-800" style="font-size: 40px;"></span>
+                    }
+                </td>
                 <td>@item.FullName</td>
                 <td>@item.Email</td>
                 <td>@item.PhoneNumber</td>
@@ -39,9 +51,10 @@
 
 <h3>Customers</h3>
 
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone Number</th>
@@ -53,6 +66,17 @@
         @foreach (var item in Model.Customers)
         {
             <tr>
+                <td style="width: 56px;">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="rounded-circle"
+                             style="width: 40px; height: 40px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span class="fas fa-user-circle text-800" style="font-size: 40px;"></span>
+                    }
+                </td>
                 <td>@item.FullName</td>
                 <td>@item.Email</td>
                 <td>@item.PhoneNumber</td>

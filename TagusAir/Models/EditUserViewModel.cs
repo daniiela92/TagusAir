@@ -19,5 +19,10 @@ namespace TagusAir.Models
 
         [MaxLength(20)]
         public string? Passport { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        [Display(Name = "Photo")]
+        public IFormFile? ImageFile { get; set; }
     }
 }

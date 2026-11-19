@@ -8,10 +8,11 @@
 
 <div class="row">
     <div class="col-md-5">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
 
             <div class="form-group mb-3">
                 <label asp-for="Email" class="control-label"></label>
@@ -40,6 +41,21 @@
                 <label asp-for="Passport" class="control-label"></label>
                 <input asp-for="Passport" class="form-control" />
                 <span asp-validation-for="Passport" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ImageFile" class="control-label"></label>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-2">
+                        <img src="@Model.ImageUrl" class="rounded-circle"
+                             style="width: 80px; height: 80px; object-fit: cover;" />
+                    </div>
+                }
+
+                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-primary">Save</button>

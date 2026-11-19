@@ -99,6 +99,7 @@ namespace TagusAir.Helpers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Passport = user.Passport,
+                ImageUrl = user.ImageUrl,
             };
         }
 
