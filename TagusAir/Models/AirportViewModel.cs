@@ -10,6 +10,7 @@ namespace TagusAir.Models
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(80, ErrorMessage = "The field {0} can contain {1} characters lenght.")]
+        [Display(Name = "Airport Name")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]

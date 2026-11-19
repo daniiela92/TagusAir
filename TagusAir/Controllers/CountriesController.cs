@@ -135,10 +135,22 @@ namespace TagusAir.Controllers
         {
             var country = await _countryRepository.GetByIdAsync(id);
 
-            if (country != null)
+            if (country == null)
             {
-                await _countryRepository.DeleteAsync(country);
+                return new NotFoundViewResult("CountryNotFound");
+
             }
+
+            var countryHasAirports = await _countryRepository.CountryHasAirportsAsync(id);
+
+
+            if (countryHasAirports)
+            {
+                ModelState.AddModelError(string.Empty, "This country cannot be deleted because it still has airports. Delete the airports first.");
+                return View(country);
+            }
+
+            await _countryRepository.DeleteAsync(country);
 
             return RedirectToAction(nameof(Index));
         }
@@ -224,6 +236,28 @@ namespace TagusAir.Controllers
             if (airport == null)
             {
                 return new NotFoundViewResult("AirportNotFound");
+            }
+
+            return View(airport);
+        }
+
+        [HttpPost, ActionName("DeleteAirport")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAirportConfirmed(int id)
+        {
+            var airport = await _countryRepository.GetAirportAsync(id);
+
+            if (airport == null)
+            {
+                return new NotFoundViewResult("AirportNotFound");
+            }
+
+            var airportHasFlights = await _countryRepository.AirportHasFlightsAsync(id);
+
+            if (airportHasFlights)
+            {
+                ModelState.AddModelError(string.Empty, "This airport cannot be deleted because it is used by flights. Delete those flights first.");
+                return View(airport);
             }
 
             var countryId = await _countryRepository.DeleteAirportAsync(airport);

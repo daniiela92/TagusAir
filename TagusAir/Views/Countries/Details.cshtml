@@ -1,48 +1,83 @@
 ﻿@model TagusAir.Data.Entities.Country
 
 @{
-    ViewData["Title"] = "Airports";
+    ViewData["Title"] = $"Airports in {Model.Name}";
 }
 
-<h2>@Model.Name</h2>
+<section class="py-6">
+    <div class="container">
 
-<p>
-    <img src="@Model.FlagImageUrl" alt="@Model.Name" style="width: 60px;" />
-</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-<p>
-    <a asp-action="AddAirport" asp-route-id="@Model.Id" class="btn btn-primary">Add Airport</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to Countries</a>
-</p>
+            <div class="d-flex align-items-center">
+                @if (!string.IsNullOrEmpty(Model.FlagImageUrl))
+                {
+                    <img src="@Model.FlagImageUrl" alt="@Model.Name"
+                         class="rounded border me-3"
+                         style="width: 48px; height: 34px; object-fit: cover;" />
+                }
+                <div>
+                    <h2 class="fw-bold mb-0">@Model.Name</h2>
+                    <span class="text-800 fs--1">
+                        @(Model.Airports == null ? 0 : Model.Airports.Count) airport(s)
+                    </span>
+                </div>
+            </div>
 
-@if (Model.Airports == null || Model.Airports.Count == 0)
-{
-    <p>This country has no airports yet.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>City</th>
-                <th>Airport</th>
-                <th>IATA Code</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var airport in Model.Airports)
-            {
-                <tr>
-                    <td>@airport.City</td>
-                    <td>@airport.Name</td>
-                    <td>@airport.IataCode</td>
-                    <td>
-                        <a asp-action="EditAirport" asp-route-id="@airport.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <a asp-action="DeleteAirport" asp-route-id="@airport.Id" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+            <div class="d-flex gap-2">
+                <a asp-action="AddAirport" asp-route-id="@Model.Id" class="btn btn-secondary">
+                    <span class="fas fa-plus me-2"></span>New airport
+                </a>
+                <a asp-action="Index" class="btn btn-outline-dark">Back to countries</a>
+            </div>
+
+        </div>
+
+        @if (Model.Airports == null || Model.Airports.Count == 0)
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-7">
+                    <span class="fas fa-map-marker-alt text-primary" style="font-size: 3rem;"></span>
+                    <h4 class="fw-bold mt-3 mb-1">No airports yet</h4>
+                    <p class="text-900 mb-0">Add the first airport for @Model.Name.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">City</th>
+                                <th>Airport</th>
+                                <th>IATA Code</th>
+                                <th class="text-end pe-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var airport in Model.Airports)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold">@airport.City</td>
+                                    <td>@airport.Name</td>
+                                    <td>
+                                        <span class="badge bg-soft-primary text-primary">@airport.IataCode</span>
+                                    </td>
+                                    <td class="text-end pe-4 text-nowrap">
+                                        <a asp-action="EditAirport" asp-route-id="@airport.Id"
+                                           class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a asp-action="DeleteAirport" asp-route-id="@airport.Id"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

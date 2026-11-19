@@ -4,36 +4,72 @@
     ViewData["Title"] = "Countries";
 }
 
-<h2>Countries</h2>
+<section class="py-6">
+    <div class="container">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Countries</h2>
+            <a asp-action="Create" class="btn btn-secondary">
+                <span class="fas fa-plus me-2"></span>New country
+            </a>
+        </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Flag</th>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.NumberOfAirports)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+        @if (!Model.Any())
         {
-            <tr>
-                <td>
-                    <img src="@item.FlagImageUrl" alt="@item.Name" style="width: 40px;" />
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.NumberOfAirports)</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Airports</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-7">
+                    <span class="fas fa-globe text-primary" style="font-size: 3rem;"></span>
+                    <h4 class="fw-bold mt-3 mb-1">No countries yet</h4>
+                    <p class="text-900 mb-0">Create a country before adding its airports.</p>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Flag</th>
+                                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                                <th>@Html.DisplayNameFor(model => model.NumberOfAirports)</th>
+                                <th class="text-end pe-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4" style="width: 80px;">
+                                        @if (!string.IsNullOrEmpty(item.FlagImageUrl))
+                                        {
+                                            <img src="@item.FlagImageUrl" alt="@item.Name"
+                                                 class="rounded"
+                                                 style="width: 40px; height: 28px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <span class="fas fa-flag text-800" style="font-size: 1.5rem;"></span>
+                                        }
+                                    </td>
+                                    <td class="fw-bold">@item.Name</td>
+                                    <td>@item.NumberOfAirports</td>
+                                    <td class="text-end pe-4 text-nowrap">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">Airports</a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

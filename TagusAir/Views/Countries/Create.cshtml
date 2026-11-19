@@ -1,31 +1,56 @@
 ﻿@model TagusAir.Models.CountryViewModel
+
 @{
-    ViewData["Title"] = "Create Country";
+    ViewData["Title"] = "New country";
 }
 
-<h2>Create Country</h2>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-<div class="row">
-    <div class="col-md-5">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                        <div class="text-center mb-5">
+                            <span class="fas fa-globe text-primary" style="font-size: 2.5rem;"></span>
+                            <h2 class="fw-bold mt-3 mb-1">New country</h2>
+                            <p class="text-900 mb-0">Countries group the airports you fly to</p>
+                        </div>
+
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="row g-4">
+
+                                <div class="col-12">
+                                    <label asp-for="Name" class="form-label fw-medium"></label>
+                                    <input asp-for="Name" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="FlagFile" class="form-label fw-medium"></label>
+                                    <input asp-for="FlagFile" type="file" accept="image/*"
+                                           class="form-control form-voyage-control" />
+                                    <span asp-validation-for="FlagFile" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 mt-3">
+                                    <button type="submit" class="btn btn-secondary">Create country</button>
+                                    <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
-            <div class="form-group mb-3">
-                <label asp-for="FlagFile" class="control-label"></label>
-                <input asp-for="FlagFile" type="file" class="form-control" />
-                <span asp-validation-for="FlagFile" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Create</button>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @{

@@ -23,6 +23,9 @@ namespace TagusAir.Data
 
         IEnumerable<SelectListItem> GetComboAirports(int countryId);
 
-       
+        Task<bool> CountryHasAirportsAsync(int countryId);
+
+        Task<bool> AirportHasFlightsAsync(int airportId);
+
     }
 }

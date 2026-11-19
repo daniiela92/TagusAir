@@ -34,6 +34,17 @@ namespace TagusAir.Data
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> AirportHasFlightsAsync(int airportId)
+        {
+            return await _context.Flights.AnyAsync(f => f.DepartureAirportId == airportId
+                                                     || f.ArrivalAirportId == airportId);
+        }
+
+        public async  Task<bool> CountryHasAirportsAsync(int countryId)
+        {
+            return await _context.Airports.AnyAsync(a => a.CountryId == countryId);
+        }
+
         public async Task<int> DeleteAirportAsync(Airport airport)
         {
             var country = await _context.Countries
