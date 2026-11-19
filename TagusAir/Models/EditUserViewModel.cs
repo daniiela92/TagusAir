@@ -24,5 +24,7 @@ namespace TagusAir.Models
 
         [Display(Name = "Photo")]
         public IFormFile? ImageFile { get; set; }
+
+        public bool IsCustomer { get; set; }
     }
 }

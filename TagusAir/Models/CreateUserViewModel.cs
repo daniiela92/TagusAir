@@ -16,6 +16,9 @@ namespace TagusAir.Models
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
+        [MaxLength(20)]
+        public string? Passport { get; set; }
+
         [Display(Name = "Photo")]
         public IFormFile? ImageFile { get; set; }
 

@@ -1,66 +1,113 @@
 ﻿@model TagusAir.Models.CreateUserViewModel
 
 @{
-    ViewData["Title"] = "Create User";
+    ViewData["Title"] = "New user";
 }
 
-<h1>Create User</h1>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-7">
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                        <div class="text-center mb-5">
+                            <span class="fas fa-user-plus text-primary" style="font-size: 2.5rem;"></span>
+                            <h2 class="fw-bold mt-3 mb-1">New user</h2>
+                            <p class="text-900 mb-0">An email will be sent so they can set their own password</p>
+                        </div>
+
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="row g-4">
+
+                                <div class="col-sm-6">
+                                    <label asp-for="FirstName" class="form-label fw-medium"></label>
+                                    <input asp-for="FirstName" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label asp-for="LastName" class="form-label fw-medium"></label>
+                                    <input asp-for="LastName" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Email" class="form-label fw-medium"></label>
+                                    <input asp-for="Email" class="form-control form-voyage-control"
+                                           placeholder="name@@example.com" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label asp-for="PhoneNumber" class="form-label fw-medium"></label>
+                                    <input asp-for="PhoneNumber" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-6" id="passportField">
+                                    <label asp-for="Passport" class="form-label fw-medium"></label>
+                                    <input asp-for="Passport" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="Passport" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Role" class="form-label fw-medium"></label>
+                                    <select asp-for="Role" class="form-select form-voyage-control">
+                                        <option value="">(Select a role...)</option>
+                                        <option value="Employee">Employee</option>
+                                        <option value="Customer">Customer</option>
+                                    </select>
+                                    <span asp-validation-for="Role" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="ImageFile" class="form-label fw-medium"></label>
+                                    <input asp-for="ImageFile" type="file" accept="image/*"
+                                           class="form-control form-voyage-control" />
+                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 mt-3">
+                                    <button type="submit" class="btn btn-secondary">Create user</button>
+                                    <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
-
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <select asp-for="Role" class="form-control">
-                    <option value="">(Select a role...)</option>
-                    <option value="Employee">Employee</option>
-                    <option value="Customer">Customer</option>
-                </select>
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(function () {
+
+            function togglePassport() {
+
+                var isCustomer = $("#Role").val() === "Customer";
+
+                $("#passportField").toggle(isCustomer);
+
+                if (!isCustomer) {
+                    $("#Passport").val("");
+                }
+            }
+
+            $("#Role").change(togglePassport);
+
+            togglePassport();
+        });
+    </script>
 }

@@ -68,6 +68,11 @@ namespace TagusAir.Controllers
                     path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "users");
                 }
 
+                if (viewModel.Role != "Customer")
+                {
+                    viewModel.Passport = null;
+                }
+
                 User createdUser = new User
                 {
                     FirstName = viewModel.FirstName,
@@ -75,6 +80,7 @@ namespace TagusAir.Controllers
                     Email = viewModel.Email,
                     UserName = viewModel.Email,
                     PhoneNumber = viewModel.PhoneNumber,
+                    Passport = viewModel.Passport,
                     ImageUrl = path,
                 };
 
@@ -134,6 +140,8 @@ namespace TagusAir.Controllers
 
             var editUserViewModel = _converterHelper.ToEditUserViewModel(user);
 
+            editUserViewModel.IsCustomer = await _userHelper.IsUserInRoleAsync(user, "Customer");
+
             return View(editUserViewModel);
 
         }
@@ -149,6 +157,13 @@ namespace TagusAir.Controllers
                 if (user == null)
                 {
                     return new NotFoundViewResult("UserNotFound");
+                }
+
+                viewModel.IsCustomer = await _userHelper.IsUserInRoleAsync(user, "Customer");
+
+                if (!viewModel.IsCustomer)
+                {
+                    viewModel.Passport = null;
                 }
 
                 user.FirstName = viewModel.FirstName;

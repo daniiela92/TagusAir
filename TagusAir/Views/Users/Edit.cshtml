@@ -1,68 +1,91 @@
 ﻿@model TagusAir.Models.EditUserViewModel
 
 @{
-    ViewData["Title"] = "Edit User";
+    ViewData["Title"] = "Edit user";
 }
 
-<h2>Edit User</h2>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-7">
 
-<div class="row">
-    <div class="col-md-5">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="ImageUrl" />
+                        <div class="text-center mb-5">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" class="rounded-circle"
+                                     style="width: 80px; height: 80px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <span class="fas fa-user-circle text-primary" style="font-size: 80px;"></span>
+                            }
 
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" readonly />
-            </div>
+                            <h2 class="fw-bold mt-3 mb-1">@Model.FirstName @Model.LastName</h2>
+                            <p class="text-900 mb-0">@Model.Email</p>
+                        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+                        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group mb-3">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="ImageUrl" />
+                            <input type="hidden" asp-for="Email" />
+                            <input type="hidden" asp-for="IsCustomer" />
 
-            <div class="form-group mb-3">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
+                            <div class="row g-4">
 
-            <div class="form-group mb-3">
-                <label asp-for="Passport" class="control-label"></label>
-                <input asp-for="Passport" class="form-control" />
-                <span asp-validation-for="Passport" class="text-danger"></span>
-            </div>
+                                <div class="col-sm-6">
+                                    <label asp-for="FirstName" class="form-label fw-medium"></label>
+                                    <input asp-for="FirstName" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="ImageFile" class="control-label"></label>
+                                <div class="col-sm-6">
+                                    <label asp-for="LastName" class="form-label fw-medium"></label>
+                                    <input asp-for="LastName" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
 
-                @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                {
-                    <div class="mb-2">
-                        <img src="@Model.ImageUrl" class="rounded-circle"
-                             style="width: 80px; height: 80px; object-fit: cover;" />
+                                <div class="col-sm-6">
+                                    <label asp-for="PhoneNumber" class="form-label fw-medium"></label>
+                                    <input asp-for="PhoneNumber" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                @if (Model.IsCustomer)
+                                {
+                                    <div class="col-sm-6">
+                                        <label asp-for="Passport" class="form-label fw-medium"></label>
+                                        <input asp-for="Passport" class="form-control form-voyage-control" />
+                                        <span asp-validation-for="Passport" class="text-danger"></span>
+                                    </div>
+                                }
+
+                                <div class="col-12">
+                                    <label asp-for="ImageFile" class="form-label fw-medium"></label>
+                                    <input asp-for="ImageFile" type="file" accept="image/*"
+                                           class="form-control form-voyage-control" />
+                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 mt-3">
+                                    <button type="submit" class="btn btn-secondary">Save changes</button>
+                                    <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                </div>
+
+                            </div>
+                        </form>
+
                     </div>
-                }
+                </div>
 
-                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
-
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a asp-action="Index" class="btn btn-secondary">Back</a>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @{
