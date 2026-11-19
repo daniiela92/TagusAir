@@ -1,59 +1,83 @@
 @model TagusAir.Data.Entities.Airplane
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Airplane details";
 }
 
-<h1>Details</h1>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
 
-<div>
-    <h4>Airplane</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Model)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EconomySeats)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EconomySeats)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BusinessSeats)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BusinessSeats)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-    <dd class="col-sm-10">
-        <img src="@Model.ImageUrl" alt="@Model.Brand" style="width: 200px;" />
-    </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">@Model.Brand @Model.Model</h2>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-primary">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-soft-secondary text-secondary">Inactive</span>
+                    }
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row g-4 align-items-center">
+
+                            <div class="col-md-5">
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" alt="@Model.Brand"
+                                         class="img-fluid rounded border" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light border rounded text-center py-6">
+                                        <span class="fas fa-plane text-800" style="font-size: 3rem;"></span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-md-7">
+
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span class="text-800">@Html.DisplayNameFor(model => model.Brand)</span>
+                                    <span class="fw-bold">@Model.Brand</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span class="text-800">@Html.DisplayNameFor(model => model.Model)</span>
+                                    <span class="fw-bold">@Model.Model</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span class="text-800">@Html.DisplayNameFor(model => model.EconomySeats)</span>
+                                    <span class="fw-bold">@Model.EconomySeats</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span class="text-800">@Html.DisplayNameFor(model => model.BusinessSeats)</span>
+                                    <span class="fw-bold">@Model.BusinessSeats</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between py-2">
+                                    <span class="text-800">Total seats</span>
+                                    <span class="fw-bold">@(Model.EconomySeats + Model.BusinessSeats)</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit airplane</a>
+                    <a asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

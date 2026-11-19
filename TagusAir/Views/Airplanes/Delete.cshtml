@@ -1,66 +1,81 @@
 @model TagusAir.Data.Entities.Airplane
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete airplane";
 }
 
-<h1>Delete</h1>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>TagusAir.Data.Entities.Airplane</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Model)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EconomySeats)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EconomySeats)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BusinessSeats)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BusinessSeats)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Model.ImageUrl" alt="@Model.Brand" style="width: 200px;" />
-        </dd>
-    </dl>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <span class="fas fa-exclamation-triangle text-danger" style="font-size: 2.5rem;"></span>
+                            <h2 class="fw-bold mt-3 mb-1">Delete this airplane?</h2>
+                            <p class="text-900 mb-0">This action cannot be undone.</p>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="text-center mb-4">
+                                <img src="@Model.ImageUrl" alt="@Model.Brand"
+                                     class="rounded border"
+                                     style="width: 200px; height: 125px; object-fit: cover;" />
+                            </div>
+                        }
+
+                        <div class="bg-light border rounded p-3 mb-4">
+
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-800">@Html.DisplayNameFor(model => model.Brand)</span>
+                                <span class="fw-bold">@Model.Brand</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-800">@Html.DisplayNameFor(model => model.Model)</span>
+                                <span class="fw-bold">@Model.Model</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-800">@Html.DisplayNameFor(model => model.EconomySeats)</span>
+                                <span class="fw-bold">@Model.EconomySeats</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-800">@Html.DisplayNameFor(model => model.BusinessSeats)</span>
+                                <span class="fw-bold">@Model.BusinessSeats</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-800">@Html.DisplayNameFor(model => model.IsActive)</span>
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-primary">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-soft-secondary text-secondary">Inactive</span>
+                                }
+                            </div>
+
+                        </div>
+
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                <button type="submit" class="btn btn-danger">Delete airplane</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

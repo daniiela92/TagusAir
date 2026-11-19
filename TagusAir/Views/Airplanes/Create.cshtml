@@ -1,59 +1,99 @@
 @model TagusAir.Models.AirplaneViewModel
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "New airplane";
 }
 
-<h1>Create</h1>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-7">
 
-<h4>Airplane</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <div class="form-group">
-                <label asp-for="Brand" class="control-label"></label>
-                <input asp-for="Brand" class="form-control" />
-                <span asp-validation-for="Brand" class="text-danger"></span>
-            </div>
+                        <div class="text-center mb-5">
+                            <span class="fas fa-plane text-primary" style="font-size: 2.5rem;"></span>
+                            <h2 class="fw-bold mt-3 mb-1">New airplane</h2>
+                            <p class="text-900 mb-0">Add an aircraft to the fleet</p>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="Model" class="control-label"></label>
-                <input asp-for="Model" class="form-control" />
-                <span asp-validation-for="Model" class="text-danger"></span>
-            </div>
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group">
-                <label asp-for="EconomySeats" class="control-label"></label>
-                <input asp-for="EconomySeats" class="form-control" />
-                <span asp-validation-for="EconomySeats" class="text-danger"></span>
-            </div>
+                            <div class="row g-3">
 
-            <div class="form-group">
-                <label asp-for="BusinessSeats" class="control-label"></label>
-                <input asp-for="BusinessSeats" class="form-control" />
-                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
-            </div>
+                                <div class="col-sm-6">
+                                    <label asp-for="Brand" class="form-label fw-medium"></label>
+                                    <input asp-for="Brand" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="Brand" class="text-danger"></span>
+                                </div>
 
-            <div class="form-group">
-                <label asp-for="IsActive" class="control-label"></label>
-                <input asp-for="IsActive" class="form-check-input" />
-                <span asp-validation-for="IsActive" class="text-danger"></span>
-            </div>
+                                <div class="col-sm-6">
+                                    <label asp-for="Model" class="form-label fw-medium"></label>
+                                    <input asp-for="Model" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="Model" class="text-danger"></span>
+                                </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                <div class="col-12">
+                                    <div class="bg-light border rounded p-3">
+
+                                        <p class="fw-medium mb-3">Seating</p>
+
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <label asp-for="EconomySeats" class="form-label fw-medium"></label>
+                                                <input asp-for="EconomySeats" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="EconomySeats" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label asp-for="BusinessSeats" class="form-label fw-medium"></label>
+                                                <input asp-for="BusinessSeats" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-800 fs--1 mb-0 mt-3">
+                                            <span class="fas fa-info-circle me-1"></span>
+                                            Seats are generated when the airplane is created and cannot be changed later.
+                                        </p>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="ImageFile" class="form-label fw-medium"></label>
+                                    <input asp-for="ImageFile" type="file" accept="image/*"
+                                           class="form-control form-voyage-control" />
+                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" />
+                                        <label asp-for="IsActive" class="form-check-label fw-medium"></label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 mt-4">
+                                    <button type="submit" class="btn btn-secondary">Create airplane</button>
+                                    <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
