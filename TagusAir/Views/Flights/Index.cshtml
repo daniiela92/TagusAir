@@ -68,12 +68,12 @@
                                 <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@item.Id"
                                    class="btn btn-secondary btn-sm mb-1">Buy</a>
                                 <a asp-action="Details" asp-route-id="@item.Id"
-                                   class="btn btn-voyage-outline btn-sm mb-1">Details</a>
+                                   class="btn btn-outline-dark btn-sm mb-1">Details</a>
 
                                 @if (User.IsInRole("Employee"))
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.Id"
-                                       class="btn btn-outline-secondary btn-sm mb-1">Edit</a>
+                                       class="btn btn-outline-primary btn-sm mb-1">Edit</a>
                                     <a asp-action="Delete" asp-route-id="@item.Id"
                                        class="btn btn-outline-danger btn-sm mb-1">Delete</a>
                                 }

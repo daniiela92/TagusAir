@@ -1,85 +1,208 @@
 @model TagusAir.Models.FlightViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit flight";
+
+    var airplaneName = Model.Airplanes?.FirstOrDefault(i => i.Value == Model.AirplaneId.ToString())?.Text;
+    var departureCountryName = Model.Countries?.FirstOrDefault(i => i.Value == Model.DepartureCountryId.ToString())?.Text;
+    var departureAirportName = Model.DepartureAirports?.FirstOrDefault(i => i.Value == Model.DepartureAirportId.ToString())?.Text;
+    var arrivalCountryName = Model.Countries?.FirstOrDefault(i => i.Value == Model.ArrivalCountryId.ToString())?.Text;
+    var arrivalAirportName = Model.ArrivalAirports?.FirstOrDefault(i => i.Value == Model.ArrivalAirportId.ToString())?.Text;
 }
 
-<h1>Edit</h1>
+<section class="py-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
 
-<h4>FlightViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            
-            <div class="form-group">
-                <label asp-for="FlightNumber" class="control-label"></label>
-                <input asp-for="FlightNumber" class="form-control" />
-                <span asp-validation-for="FlightNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartureTime" class="control-label"></label>
-                <input asp-for="DepartureTime" class="form-control" />
-                <span asp-validation-for="DepartureTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ArrivalTime" class="control-label"></label>
-                <input asp-for="ArrivalTime" class="form-control" />
-                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartureCountryId" class="control-label"></label>
-                <select asp-for="DepartureCountryId" asp-items="Model.Countries" class="form-control"></select>
-            </div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
 
-            <div class="form-group">
-                <label asp-for="DepartureAirportId" class="control-label"></label>
-                <select asp-for="DepartureAirportId" asp-items="Model.DepartureAirports" class="form-control"></select>
-                <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
-            </div>
+                        <div class="text-center mb-5">
+                            <span class="fas fa-plane text-primary" style="font-size: 2.5rem;"></span>
+                            <h2 class="fw-bold mt-3 mb-1">Edit flight</h2>
+                            <p class="text-900 mb-0">@Model.FlightNumber</p>
+                        </div>
 
-            <div class="form-group">
-                <label asp-for="ArrivalCountryId" class="control-label"></label>
-                <select asp-for="ArrivalCountryId" asp-items="Model.Countries" class="form-control"></select>
-            </div>
+                        @if (Model.HasTickets)
+                        {
+                            <div class="bg-light border rounded p-3 mb-4">
+                                <p class="mb-0 text-900">
+                                    <span class="fas fa-info-circle text-primary me-2"></span>
+                                    This flight already has tickets sold. The flight number, the route and the
+                                    aircraft can no longer be changed, because passengers bought a seat on this
+                                    exact journey. Times and price can still be updated.
+                                </p>
+                            </div>
+                        }
 
-            <div class="form-group">
-                <label asp-for="ArrivalAirportId" class="control-label"></label>
-                <select asp-for="ArrivalAirportId" asp-items="Model.ArrivalAirports" class="form-control"></select>
-                <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
+                        <form asp-action="Edit" method="post">
+                            <div asp-validation-summary="ModelOnly" class="mb-3"></div>
+
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="HasTickets" />
+
+                            <div class="row g-4">
+
+                                <div class="col-sm-5">
+                                    <label asp-for="FlightNumber" class="form-label fw-medium"></label>
+
+                                    @if (Model.HasTickets)
+                                    {
+                                        <p class="fw-bold mb-0 pb-2">@Model.FlightNumber</p>
+                                        <input type="hidden" asp-for="FlightNumber" />
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="FlightNumber" class="form-control form-voyage-control" />
+                                        <span asp-validation-for="FlightNumber" class="text-danger"></span>
+                                    }
+                                </div>
+
+                                <div class="col-sm-7">
+                                    <label asp-for="AirplaneId" class="form-label fw-medium"></label>
+
+                                    @if (Model.HasTickets)
+                                    {
+                                        <p class="fw-bold mb-0 pb-2">@airplaneName</p>
+                                        <input type="hidden" asp-for="AirplaneId" />
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="AirplaneId" asp-items="Model.Airplanes"
+                                                class="form-select form-voyage-control"></select>
+                                        <span asp-validation-for="AirplaneId" class="text-danger"></span>
+                                    }
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="bg-light border rounded p-3">
+
+                                        <p class="fw-medium mb-3">
+                                            <span class="fas fa-plane-departure text-primary me-2"></span>Departure
+                                        </p>
+
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <label asp-for="DepartureCountryId" class="form-label fw-medium"></label>
+
+                                                @if (Model.HasTickets)
+                                                {
+                                                    <p class="fw-bold mb-0">@departureCountryName</p>
+                                                    <input type="hidden" asp-for="DepartureCountryId" />
+                                                }
+                                                else
+                                                {
+                                                    <select asp-for="DepartureCountryId" asp-items="Model.Countries"
+                                                            class="form-select form-voyage-control"></select>
+                                                }
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label asp-for="DepartureAirportId" class="form-label fw-medium"></label>
+
+                                                @if (Model.HasTickets)
+                                                {
+                                                    <p class="fw-bold mb-0">@departureAirportName</p>
+                                                    <input type="hidden" asp-for="DepartureAirportId" />
+                                                }
+                                                else
+                                                {
+                                                    <select asp-for="DepartureAirportId" asp-items="Model.DepartureAirports"
+                                                            class="form-select form-voyage-control"></select>
+                                                    <span asp-validation-for="DepartureAirportId" class="text-danger"></span>
+                                                }
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label asp-for="DepartureTime" class="form-label fw-medium"></label>
+                                                <input asp-for="DepartureTime" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="DepartureTime" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="bg-light border rounded p-3">
+
+                                        <p class="fw-medium mb-3">
+                                            <span class="fas fa-plane-arrival text-primary me-2"></span>Arrival
+                                        </p>
+
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <label asp-for="ArrivalCountryId" class="form-label fw-medium"></label>
+
+                                                @if (Model.HasTickets)
+                                                {
+                                                    <p class="fw-bold mb-0">@arrivalCountryName</p>
+                                                    <input type="hidden" asp-for="ArrivalCountryId" />
+                                                }
+                                                else
+                                                {
+                                                    <select asp-for="ArrivalCountryId" asp-items="Model.Countries"
+                                                            class="form-select form-voyage-control"></select>
+                                                }
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label asp-for="ArrivalAirportId" class="form-label fw-medium"></label>
+
+                                                @if (Model.HasTickets)
+                                                {
+                                                    <p class="fw-bold mb-0">@arrivalAirportName</p>
+                                                    <input type="hidden" asp-for="ArrivalAirportId" />
+                                                }
+                                                else
+                                                {
+                                                    <select asp-for="ArrivalAirportId" asp-items="Model.ArrivalAirports"
+                                                            class="form-select form-voyage-control"></select>
+                                                    <span asp-validation-for="ArrivalAirportId" class="text-danger"></span>
+                                                }
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label asp-for="ArrivalTime" class="form-label fw-medium"></label>
+                                                <input asp-for="ArrivalTime" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-5">
+                                    <label asp-for="BasePrice" class="form-label fw-medium"></label>
+                                    <input asp-for="BasePrice" class="form-control form-voyage-control" />
+                                    <span asp-validation-for="BasePrice" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 mt-3">
+                                    <button type="submit" class="btn btn-secondary">Save changes</button>
+                                    <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
-          
-            <div class="form-group">
-                <label asp-for="AirplaneId" class="control-label"></label>
-                <select asp-for="AirplaneId" asp-items="Model.Airplanes" class="form-control"></select>
-                <span asp-validation-for="AirplaneId" class="text-danger"></span>
-            </div>
-       
-            <div class="form-group">
-                <label asp-for="BasePrice" class="control-label"></label>
-                <input asp-for="BasePrice" class="form-control" />
-                <span asp-validation-for="BasePrice" class="text-danger"></span>
-            </div>
-       
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     @{
         await Html.RenderPartialAsync("_ValidationCurrencyPartial");
     }
-
 
     <script type="text/javascript">
         $(document).ready(function () {

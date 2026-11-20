@@ -10,51 +10,85 @@
         <div class="row g-4">
 
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-5">
 
-                        <span class="badge bg-soft-primary text-primary mb-3">@Model.FlightNumber</span>
+                        <span class="badge bg-soft-primary text-primary mb-4">@Model.FlightNumber</span>
 
-                        <div class="d-flex align-items-center flex-wrap mb-5">
-                            <div class="me-4">
+                        <div class="row align-items-center g-3 mb-4">
+
+                            <div class="col-4">
                                 @if (!string.IsNullOrEmpty(Model.DepartureAirport.Country.FlagImageUrl))
                                 {
-                                    <img src="@Model.DepartureAirport.Country.FlagImageUrl" style="width: 28px;" class="mb-2" />
+                                    <img src="@Model.DepartureAirport.Country.FlagImageUrl"
+                                         class="rounded border mb-2"
+                                         style="width: 28px; height: 20px; object-fit: cover;" />
                                 }
-                                <h3 class="fw-bold mb-0">@Model.DepartureAirport.IataCode</h3>
-                                <span class="text-900">@Model.DepartureAirport.City</span>
+                                <h1 class="fw-bolder mb-0">@Model.DepartureAirport.IataCode</h1>
+                                <div class="text-900">@Model.DepartureAirport.City</div>
                                 <div class="text-800 fs--1">@Model.DepartureAirport.Name</div>
                             </div>
 
-                            <i class="fas fa-plane text-primary fs-3 mx-4"></i>
+                            <div class="col-4 text-center">
+                                <div class="text-800 fs--1 mb-1">
+                                    @($"{Model.Duration.Hours}h {Model.Duration.Minutes:00}m")
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1 border-top"></div>
+                                    <i class="fas fa-plane text-primary mx-2"></i>
+                                    <div class="flex-grow-1 border-top"></div>
+                                </div>
+                                <div class="text-800 fs--1 mt-1">Direct</div>
+                            </div>
 
-                            <div>
+                            <div class="col-4 text-end">
                                 @if (!string.IsNullOrEmpty(Model.ArrivalAirport.Country.FlagImageUrl))
                                 {
-                                    <img src="@Model.ArrivalAirport.Country.FlagImageUrl" style="width: 28px;" class="mb-2" />
+                                    <img src="@Model.ArrivalAirport.Country.FlagImageUrl"
+                                         class="rounded border mb-2"
+                                         style="width: 28px; height: 20px; object-fit: cover;" />
                                 }
-                                <h3 class="fw-bold mb-0">@Model.ArrivalAirport.IataCode</h3>
-                                <span class="text-900">@Model.ArrivalAirport.City</span>
+                                <h1 class="fw-bolder mb-0">@Model.ArrivalAirport.IataCode</h1>
+                                <div class="text-900">@Model.ArrivalAirport.City</div>
                                 <div class="text-800 fs--1">@Model.ArrivalAirport.Name</div>
                             </div>
+
                         </div>
 
-                        <div class="row g-4">
-                            <div class="col-sm-4">
-                                <div class="text-800 fs--1 mb-1">Departure</div>
-                                <div class="fw-bold">@Model.DepartureTime.ToString("dd/MM/yyyy")</div>
-                                <div class="fw-bold">@Model.DepartureTime.ToString("HH:mm")</div>
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-6">
+                                <div class="bg-light border rounded p-3">
+                                    <div class="text-800 fs--1 mb-1">Departure</div>
+                                    <h4 class="fw-bold mb-0">@Model.DepartureTime.ToString("HH:mm")</h4>
+                                    <div class="text-900">@Model.DepartureTime.ToString("dd/MM/yyyy")</div>
+                                </div>
                             </div>
 
-                            <div class="col-sm-4">
-                                <div class="text-800 fs--1 mb-1">Arrival</div>
-                                <div class="fw-bold">@Model.ArrivalTime.ToString("dd/MM/yyyy")</div>
-                                <div class="fw-bold">@Model.ArrivalTime.ToString("HH:mm")</div>
+                            <div class="col-6">
+                                <div class="bg-light border rounded p-3">
+                                    <div class="text-800 fs--1 mb-1">Arrival</div>
+                                    <h4 class="fw-bold mb-0">@Model.ArrivalTime.ToString("HH:mm")</h4>
+                                    <div class="text-900">@Model.ArrivalTime.ToString("dd/MM/yyyy")</div>
+                                </div>
                             </div>
 
-                            <div class="col-sm-4">
-                                <div class="text-800 fs--1 mb-1">Duration</div>
-                                <div class="fw-bold">@Model.Duration.Hours h @Model.Duration.Minutes min</div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex align-items-center">
+                            @if (!string.IsNullOrEmpty(Model.Airplane.ImageUrl))
+                            {
+                                <img src="@Model.Airplane.ImageUrl"
+                                     class="rounded border me-3"
+                                     style="width: 80px; height: 54px; object-fit: cover;"
+                                     alt="@Model.Airplane.Brand @Model.Airplane.Model"
+                                     onerror="this.style.display='none'" />
+                            }
+                            <div>
+                                <div class="text-800 fs--1">Aircraft</div>
+                                <div class="fw-bold">@Model.Airplane.Brand @Model.Airplane.Model</div>
                             </div>
                         </div>
 
@@ -63,34 +97,40 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm mb-4">
-                    @if (!string.IsNullOrEmpty(Model.Airplane.ImageUrl))
-                    {
-                        <img src="@Model.Airplane.ImageUrl" class="card-img-top" alt="@Model.Airplane.Brand @Model.Airplane.Model" />
-                    }
-                    <div class="card-body p-4">
-                        <div class="text-800 fs--1 mb-1">Aircraft</div>
-                        <h5 class="fw-bold mb-0">@Model.Airplane.Brand @Model.Airplane.Model</h5>
-                    </div>
-                </div>
+                <div class="card border-0 shadow-sm bg-soft-primary h-100">
+                    <div class="card-body p-4 d-flex flex-column">
 
-                <div class="card border-0 shadow-sm bg-soft-primary">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-900">Economy</span>
-                            <span class="fw-bold">@Model.BasePrice.ToString("C2")</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-4">
-                            <span class="text-900">Business</span>
-                            <span class="fw-bold">@Model.BusinessPrice.ToString("C2")</span>
+                        <h5 class="fw-bold mb-4">Fares</h5>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="fw-bold">Economy</div>
+                                <div class="text-800 fs--1">Standard seat</div>
+                            </div>
+                            <span class="fw-bolder fs-5">@Model.BasePrice.ToString("C2")</span>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@Model.Id" class="btn btn-secondary">
-                                Buy this flight
-                            </a>
-                            <a asp-action="Index" class="btn btn-voyage-outline">Back to flights</a>
+                        @if (Model.Airplane.BusinessSeats > 0)
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div>
+                                    <div class="fw-bold">Business</div>
+                                    <div class="text-800 fs--1">Extra space and service</div>
+                                </div>
+                                <span class="fw-bolder fs-5">@Model.BusinessPrice.ToString("C2")</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-4"></div>
+                        }
+
+                        <div class="d-grid gap-2 mt-auto">
+                            <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@Model.Id"
+                               class="btn btn-secondary">Buy this flight</a>
+                            <a asp-action="Index" class="btn btn-outline-dark">Back to flights</a>
                         </div>
+
                     </div>
                 </div>
             </div>

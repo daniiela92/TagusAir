@@ -22,6 +22,8 @@ namespace TagusAir.Models
 
         public IEnumerable<SelectListItem>? Countries { get; set; }
 
+        public bool HasTickets { get; set; }
+
 
 
 
