@@ -79,7 +79,7 @@ namespace TagusAir.Data
                 return null!;
             }
 
-            if(await _userHelper.IsUserInRoleAsync(user, "Employee")) 
+            if(await _userHelper.IsUserInRoleAsync(user, "Employee") || await _userHelper.IsUserInRoleAsync(user, "Admin")) 
             {
                 return _context.Tickets
                     .Include(t => t.Seat)

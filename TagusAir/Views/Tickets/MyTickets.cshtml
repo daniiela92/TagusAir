@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<TagusAir.Data.Entities.Ticket>
 
 @{
-    var isEmployee = User.IsInRole("Employee");
+    var isStaff = User.IsInRole("Employee") || User.IsInRole("Admin");
 
-    ViewData["Title"] = isEmployee ? "Flight history" : "My Tickets";
+    ViewData["Title"] = isStaff ? "Flight history" : "My Tickets";
 }
 
 <section class="py-6">
     <div class="container">
 
-        <h2 class="fw-bold mb-5">@(isEmployee ? "Flight history" : "My tickets")</h2>
+        <h2 class="fw-bold mb-5">@(isStaff ? "Flight history" : "My tickets")</h2>
 
-        @if (isEmployee)
+        @if (isStaff)
         {
             <form asp-action="MyTickets" method="get" class="row g-2 mb-4">
                 <div class="col-sm-6 col-lg-4">
@@ -36,9 +36,9 @@
         {
             <div class="text-center py-8">
                 <i class="fas fa-ticket-alt text-primary" style="font-size: 4rem;"></i>
-                <h3 class="mt-4 fw-bold">@(isEmployee ? "No tickets found" : "No tickets yet")</h3>
+                <h3 class="mt-4 fw-bold">@(isStaff ? "No tickets found" : "No tickets yet")</h3>
 
-                @if (!isEmployee)
+                @if (!isStaff)
                 {
                     <p class="text-900">When you book a flight, your tickets will show up here.</p>
                     <a asp-controller="Flights" asp-action="Index" class="btn btn-secondary mt-3">Browse flights</a>
@@ -77,7 +77,7 @@
                                     @item.Flight.DepartureTime.ToString("dd/MM/yyyy HH:mm")
                                 </div>
 
-                                @if (isEmployee && item.User != null)
+                                @if (isStaff && item.User != null)
                                 {
                                     <div class="text-900">
                                         <i class="fas fa-user text-800 me-2"></i>
@@ -106,7 +106,7 @@
                                 {
                                     <span class="badge bg-primary p-2">Upcoming</span>
 
-                                    @if (!isEmployee)
+                                    @if (!isStaff)
                                     {
                                         <div class="mt-2">
                                             <a asp-action="Cancel" asp-route-id="@item.Id"

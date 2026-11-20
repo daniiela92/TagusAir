@@ -59,7 +59,7 @@
                                             <a class="dropdown-item" asp-controller="Airplanes" asp-action="Index">Airplanes</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" asp-controller="Countries" asp-action="Index">Countries</a>
+                                            <a class="dropdown-item" asp-controller="Countries" asp-action="Index">Countries &amp; airports</a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a>
@@ -71,7 +71,7 @@
                             <li class="nav-item px-1">
                                 <a class="nav-link fw-medium text-nowrap" asp-controller="Tickets" asp-action="MyTickets">
                                     <span class="nav-link-icon text-800 me-1 fas fa-ticket-alt"></span>
-                                    <span class="nav-link-text">@(User.IsInRole("Employee") ? "Flight history" : "My Tickets")</span>
+                                    <span class="nav-link-text">@(User.IsInRole("Employee") || User.IsInRole("Admin") ? "Flight history" : "My Tickets")</span>
                                 </a>
                             </li>
                         }
