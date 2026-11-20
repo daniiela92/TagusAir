@@ -157,22 +157,32 @@ public class AirplanesController : Controller
         return View(airplane);
     }
 
-    // POST: AIRPLANES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
-        var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
-
-        if (airplane != null)
+        if (id == null)
         {
-            await _airplaneRepository.DeleteWithSeatsAsync(airplane);
+            return new NotFoundViewResult("AirplaneNotFound");
         }
 
-        
+        var airplane = await _airplaneRepository.GetByIdAsync(id.Value);
+
+        if (airplane == null)
+        {
+            return new NotFoundViewResult("AirplaneNotFound");
+        }
+
+        var airplaneHasFlights = await _airplaneRepository.AirplaneHasFlightsAsync(id.Value);
+
+        if (airplaneHasFlights)
+        {
+            ModelState.AddModelError(string.Empty, "This airplane cannot be deleted because it is assigned to flights. Delete those flights first.");
+            return View(airplane);
+        }
+
+        await _airplaneRepository.DeleteWithSeatsAsync(airplane);
+
         return RedirectToAction(nameof(Index));
     }
-
-   
-
 }

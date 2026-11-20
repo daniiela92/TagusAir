@@ -12,6 +12,11 @@ namespace TagusAir.Data
             _context = context;
         }
 
+        public async Task<bool> AirplaneHasFlightsAsync(int airplaneId)
+        {
+            return await _context.Flights.AnyAsync(f => f.AirplaneId == airplaneId);
+        }
+
         public async Task CreateWithSeatsAsync(Airplane airplane)
         {
 

@@ -8,5 +8,7 @@ namespace TagusAir.Data
 
         Task DeleteWithSeatsAsync(Airplane airplane);
 
+        Task<bool> AirplaneHasFlightsAsync(int airplaneId);
+
     }
 }
