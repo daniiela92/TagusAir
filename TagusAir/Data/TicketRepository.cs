@@ -97,6 +97,7 @@ namespace TagusAir.Data
                     .ThenInclude(f => f.DepartureAirport)
                     .Include(t => t.Flight)
                     .ThenInclude(f => f.ArrivalAirport)
+                    .Include(t => t.User)
                     .Where(t => t.UserId == user.Id)
                     .OrderByDescending(t => t.Flight.DepartureTime);
         }

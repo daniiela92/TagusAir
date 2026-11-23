@@ -1,0 +1,124 @@
+﻿@model TagusAir.Data.Entities.Ticket
+
+@{
+    ViewData["Title"] = "Ticket details";
+    var ticketReference = $"TAGUSAIR-{Model.Id}";
+}
+
+<section class="py-6">
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-5">
+
+                        <span class="badge bg-soft-primary text-primary mb-4">@Model.Flight.FlightNumber</span>
+
+                        <div class="row align-items-center g-3 mb-4">
+
+                            <div class="col-4">
+                                <h1 class="fw-bolder mb-0">@Model.Flight.DepartureAirport.IataCode</h1>
+                                <div class="text-900">@Model.Flight.DepartureAirport.City</div>
+                                <div class="text-800 fs--1">@Model.Flight.DepartureAirport.Name</div>
+                            </div>
+
+                            <div class="col-4 text-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1 border-top"></div>
+                                    <i class="fas fa-plane text-primary mx-2"></i>
+                                    <div class="flex-grow-1 border-top"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-4 text-end">
+                                <h1 class="fw-bolder mb-0">@Model.Flight.ArrivalAirport.IataCode</h1>
+                                <div class="text-900">@Model.Flight.ArrivalAirport.City</div>
+                                <div class="text-800 fs--1">@Model.Flight.ArrivalAirport.Name</div>
+                            </div>
+
+                        </div>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-6">
+                                <div class="bg-light border rounded p-3">
+                                    <div class="text-800 fs--1 mb-1">Departure</div>
+                                    <h4 class="fw-bold mb-0">@Model.Flight.DepartureTime.ToString("HH:mm")</h4>
+                                    <div class="text-900">@Model.Flight.DepartureTime.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="bg-light border rounded p-3">
+                                    <div class="text-800 fs--1 mb-1">Arrival</div>
+                                    <h4 class="fw-bold mb-0">@Model.Flight.ArrivalTime.ToString("HH:mm")</h4>
+                                    <div class="text-900">@Model.Flight.ArrivalTime.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <div class="text-800 fs--1">Passenger</div>
+                                <div class="fw-bold">@Model.User.FirstName @Model.User.LastName</div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="text-800 fs--1">Seat</div>
+                                <div class="fw-bold">@Model.Seat.Code</div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="text-800 fs--1">Class</div>
+                                <div class="fw-bold">@Model.Seat.Class</div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm bg-soft-primary h-100">
+                    <div class="card-body p-4 d-flex flex-column text-center">
+
+                        <h5 class="fw-bold mb-4 text-start">Boarding pass</h5>
+
+                        <div class="bg-white rounded p-3 d-inline-block mx-auto mb-3">
+                            <ejs-qrcodegenerator id="ticketQrCode"
+                                                 width="160px"
+                                                 height="160px"
+                                                 value="@ticketReference">
+                                <e-qrcodegenerator-displaytext visibility="false"></e-qrcodegenerator-displaytext>
+                            </ejs-qrcodegenerator>
+                        </div>
+
+                        <div class="text-800 fs--1">Ticket reference</div>
+                        <div class="fw-bold mb-4">@ticketReference</div>
+
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3 text-start">
+                            <div>
+                                <div class="text-800 fs--1">Paid</div>
+                                <div class="text-800 fs--1">@Model.PurchaseDate.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <span class="fw-bolder fs-5">@Model.Price.ToString("C2")</span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-auto pt-4">
+                            <a asp-action="MyTickets" class="btn btn-outline-dark">Back to my tickets</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

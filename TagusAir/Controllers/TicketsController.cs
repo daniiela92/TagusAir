@@ -108,8 +108,16 @@ namespace TagusAir.Controllers
 
                     if (user != null)
                     {
-                        await _ticketRepository.BuyTicketsAsync(viewModel.FlightId, viewModel.SeatId, user.Id);
-                        return RedirectToAction(nameof(MyTickets));
+                        var ticket = await _ticketRepository.BuyTicketsAsync(viewModel.FlightId, viewModel.SeatId, user.Id);
+
+                        if (ticket == null)
+                        {
+                            ModelState.AddModelError(string.Empty, "This flight or seat is no longer available.");
+                        }
+                        else
+                        {
+                            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+                        }
                     }
                 }
                 
@@ -234,6 +242,25 @@ namespace TagusAir.Controllers
 
             return RedirectToAction(nameof(MyTickets));
 
+        }
+
+        [Authorize(Roles = "Employee,Customer")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("TicketNotFound");
+            }
+
+            var tickets = await _ticketRepository.GetTicketsAsync(this.User.Identity.Name);
+            var ticket = await tickets.FirstOrDefaultAsync(t => t.Id == id.Value);
+
+            if (ticket == null)
+            {
+                return new NotFoundViewResult("TicketNotFound");
+            }
+
+            return View(ticket);
         }
 
 

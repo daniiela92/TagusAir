@@ -49,6 +49,8 @@
         {
             @foreach (var item in Model)
             {
+                var isUpcoming = item.Flight.DepartureTime >= DateTime.Now;
+
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body p-4">
                         <div class="row align-items-center g-3">
@@ -98,22 +100,25 @@
                             </div>
 
                             <div class="col-md-2 text-md-end">
-                                @if (item.Flight.DepartureTime < DateTime.Now)
+                                @if (isUpcoming)
                                 {
-                                    <span class="badge bg-soft-secondary text-secondary p-2">Past</span>
+                                    <span class="badge bg-primary p-2">Upcoming</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-primary p-2">Upcoming</span>
-
-                                    @if (!isStaff)
-                                    {
-                                        <div class="mt-2">
-                                            <a asp-action="Cancel" asp-route-id="@item.Id"
-                                               class="btn btn-outline-danger btn-sm">Cancel</a>
-                                        </div>
-                                    }
+                                    <span class="badge bg-soft-secondary text-secondary p-2">Past</span>
                                 }
+
+                                <div class="d-flex flex-wrap gap-2 justify-content-md-end mt-2">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="btn btn-outline-dark btn-sm">Details</a>
+
+                                    @if (isUpcoming && !isStaff)
+                                    {
+                                        <a asp-action="Cancel" asp-route-id="@item.Id"
+                                           class="btn btn-outline-danger btn-sm">Cancel</a>
+                                    }
+                                </div>
 
                                 <div class="text-800 fs--1 mt-2">
                                     Bought @item.PurchaseDate.ToString("dd/MM/yyyy")

@@ -10,8 +10,10 @@
     <title>@ViewData["Title"] - TagusAir</title>
 
     <link href="~/voyage/assets/css/theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/35.2.12/bootstrap5.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TagusAir.styles.css" asp-append-version="true" />
+    <script src="https://cdn.syncfusion.com/ej2/35.2.12/dist/ej2.min.js"></script>
 </head>
 <body>
     <main class="main" id="top">
@@ -139,7 +141,7 @@
     <script src="~/voyage/assets/js/theme.js"></script>
     <script src="~/voyage/vendors/fontawesome/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <ejs-scripts></ejs-scripts>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
