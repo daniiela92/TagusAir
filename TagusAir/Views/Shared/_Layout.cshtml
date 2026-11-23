@@ -68,12 +68,15 @@
                                 </li>
                             }
 
-                            <li class="nav-item px-1">
-                                <a class="nav-link fw-medium text-nowrap" asp-controller="Tickets" asp-action="MyTickets">
-                                    <span class="nav-link-icon text-800 me-1 fas fa-ticket-alt"></span>
-                                    <span class="nav-link-text">@(User.IsInRole("Employee") || User.IsInRole("Admin") ? "Flight history" : "My Tickets")</span>
-                                </a>
-                            </li>
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item px-1">
+                                    <a class="nav-link fw-medium text-nowrap" asp-controller="Tickets" asp-action="MyTickets">
+                                        <span class="nav-link-icon text-800 me-1 fas fa-ticket-alt"></span>
+                                        <span class="nav-link-text">@(User.IsInRole("Employee") ? "Flight history" : "My Tickets")</span>
+                                    </a>
+                                </li>
+                            }
                         }
 
                     </ul>

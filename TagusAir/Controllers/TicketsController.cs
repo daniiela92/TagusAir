@@ -120,7 +120,7 @@ namespace TagusAir.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Employee, Customer")]
         public async Task<IActionResult> MyTickets(string search)
         {
             var list = await _ticketRepository.GetTicketsAsync(this.User.Identity.Name);
