@@ -204,21 +204,32 @@ namespace TagusAir.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAirport(AirportViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                                    var airport = _converterHelper.ToAirport(viewModel);
 
-                    var countryId = await _countryRepository.UpdateAirportAsync(airport);
+                var airportHasFlights = await _countryRepository.AirportHasFlightsAsync(viewModel.AirportId);
 
-                    if (countryId != 0)
-                    {
-                        return RedirectToAction(nameof(Details), new { id = countryId });
-                    }
-                
+                if (airportHasFlights)
+                {
+                    ModelState.AddModelError(string.Empty, "This airport has been used in flights and cannot be changed.");
+                    return View(viewModel);
+                }
 
-               
+
+                var airport = _converterHelper.ToAirport(viewModel);
+
+                var countryId = await _countryRepository.UpdateAirportAsync(airport);
+
+                if (countryId != 0)
+                {
+                    return RedirectToAction(nameof(Details), new { id = countryId });
+                }
+
+
+
             }
 
             return View(viewModel);
