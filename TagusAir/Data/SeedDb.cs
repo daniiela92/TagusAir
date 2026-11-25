@@ -183,10 +183,10 @@ namespace TagusAir.Data
 
             if (!_context.Airplanes.Any())
             {
-                await AddAirplaneAsync("Airbus", "A320neo", 165, 15);
-                await AddAirplaneAsync("Boeing", "737 MAX 8", 162, 16);
-                await AddAirplaneAsync("Airbus", "A330-900", 250, 34);
-                await AddAirplaneAsync("Embraer", "E195-E2", 132, 0);
+                await AddAirplaneAsync("Airbus", "A320neo", 165, 15, "/images/airplanes-seed/a320neo.jpg");
+                await AddAirplaneAsync("Boeing", "737 MAX 8", 162, 16, "/images/airplanes-seed/b737max8.png");
+                await AddAirplaneAsync("Airbus", "A330-900", 250, 34, "/images/airplanes-seed/a330-900.jpg");
+                await AddAirplaneAsync("Embraer", "E195-E2", 132, 0, "/images/airplanes-seed/e195-e2.png");
 
             }
 
@@ -259,7 +259,7 @@ namespace TagusAir.Data
         }
 
 
-        private async Task AddAirplaneAsync(string brand, string model, int economySeats, int businessSeats)
+        private async Task AddAirplaneAsync(string brand, string model, int economySeats, int businessSeats, string imageUrl)
         {
             await _airplaneRepository.CreateWithSeatsAsync(new Airplane
             {
@@ -268,7 +268,7 @@ namespace TagusAir.Data
                 EconomySeats = economySeats,
                 BusinessSeats = businessSeats,
                 IsActive = true,
-                
+                ImageUrl = imageUrl
             });
         } 
 

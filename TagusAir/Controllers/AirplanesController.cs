@@ -66,12 +66,13 @@ public class AirplanesController : Controller
     {
         if (ModelState.IsValid)
         {
-            string path = string.Empty;
-
-            if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+            if (viewModel.ImageFile == null || viewModel.ImageFile.Length == 0)
             {
-                path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
+                ModelState.AddModelError(nameof(viewModel.ImageFile), "An airplane must have a photo.");
+                return View(viewModel);
             }
+
+            string path = await _imageHelper.UploadImageAsync(viewModel.ImageFile, "airplanes");
 
             var airplane = _converterHelper.ToAirplane(viewModel, path, true);
 
@@ -106,9 +107,15 @@ public class AirplanesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(AirplaneViewModel viewModel)
     {
-      
         if (ModelState.IsValid)
         {
+            if (string.IsNullOrEmpty(viewModel.ImageUrl)
+                && (viewModel.ImageFile == null || viewModel.ImageFile.Length == 0))
+            {
+                ModelState.AddModelError(nameof(viewModel.ImageFile), "An airplane must have a photo.");
+                return View(viewModel);
+            }
+
             try
             {
                 string path = viewModel.ImageUrl;
