@@ -18,20 +18,39 @@
                 <div class="pt-5">
                     <form class="row g-4" asp-controller="Flights" asp-action="Search" method="get">
 
-                        <div class="col-sm-12 col-xl-10">
+                        <div class="col-sm-6 col-xl-5">
                             <div class="input-group-icon">
-                                <select class="form-select form-voyage-select input-box"
-                                        name="originAirportId" asp-items="Model"></select>
+                                <select class="form-select form-voyage-select input-box" name="originAirportId">
+                                    <option value="0">From anywhere</option>
+                                    @foreach (var airport in Model)
+                                    {
+                                        <option value="@airport.Value">@airport.Text</option>
+                                    }
+                                </select>
                                 <span class="nav-link-icon text-800 fs--1 input-box-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
+                                    <i class="fas fa-plane-departure"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-xl-5">
+                            <div class="input-group-icon">
+                                <select class="form-select form-voyage-select input-box" name="destinationAirportId">
+                                    <option value="0">To anywhere</option>
+                                    @foreach (var airport in Model)
+                                    {
+                                        <option value="@airport.Value">@airport.Text</option>
+                                    }
+                                </select>
+                                <span class="nav-link-icon text-800 fs--1 input-box-icon">
+                                    <i class="fas fa-plane-arrival"></i>
                                 </span>
                             </div>
                         </div>
 
                         <div class="col-sm-12 col-xl-10">
                             <div class="input-group-icon">
-                                <input class="form-control input-box form-voyage-control"
-                                       name="date" type="date" />
+                                <input class="form-control input-box form-voyage-control" name="date" type="date" />
                                 <span class="nav-link-icon text-800 fs--1 input-box-icon">
                                     <i class="fas fa-calendar"></i>
                                 </span>

@@ -42,7 +42,7 @@ namespace TagusAir.Data
                 .Where(f => f.DepartureTime > DateTime.Now);
         }
 
-        public IQueryable<Flight> SearchFlights(DateTime? date, int? originAirportId)
+        public IQueryable<Flight> SearchFlights(DateTime? date, int? originAirportId, int? destinationAirportId)
         {
             var flights = this.GetAvailableFlights();
 
@@ -54,6 +54,11 @@ namespace TagusAir.Data
             if (originAirportId.HasValue && originAirportId.Value != 0)
             {
                 flights = flights.Where(f => f.DepartureAirportId == originAirportId.Value);
+            }
+
+            if (destinationAirportId.HasValue && destinationAirportId.Value != 0)
+            {
+                flights = flights.Where(f => f.ArrivalAirportId == destinationAirportId.Value);
             }
 
             return flights;
@@ -92,12 +97,6 @@ namespace TagusAir.Data
                 })
                 .OrderBy(l => l.Text)
                 .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "(Select an airport...)",
-                Value = "0"
-            });
 
             return list;
         }
