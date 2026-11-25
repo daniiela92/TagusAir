@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 using TagusAir.Models;
 
 namespace TagusAir.Data
@@ -13,7 +14,7 @@ namespace TagusAir.Data
 
         Task<Airport> GetAirportAsync(int id);
 
-        Task AddAirportAsync(AirportViewModel model);
+        Task AddAirportAsync(AirportViewModel model, AirportLocation location);
 
         Task<int> UpdateAirportAsync(Airport airport);
 

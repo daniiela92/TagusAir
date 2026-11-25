@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TagusAir.Data.Entities;
+using TagusAir.Helpers;
 using TagusAir.Models;
 
 namespace TagusAir.Data
@@ -14,7 +15,7 @@ namespace TagusAir.Data
             _context = context;
         }
 
-        public async Task AddAirportAsync(AirportViewModel model)
+        public async Task AddAirportAsync(AirportViewModel model, AirportLocation location)
         {
             var country = await this.GetCountryWithAirportsAsync(model.CountryId);
 
@@ -27,7 +28,9 @@ namespace TagusAir.Data
             {
                 Name = model.Name,
                 City = model.City,
-                IataCode = model.IataCode
+                IataCode = model.IataCode,
+                Latitude = location.Latitude,
+                Longitude = location.Longitude,
             });
 
             _context.Countries.Update(country);

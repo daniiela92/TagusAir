@@ -175,11 +175,20 @@ namespace TagusAir.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAirport(AirportViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _countryRepository.AddAirportAsync(model);
+                var location = AirportCoordinates.GetAirportLocation(model.IataCode);
+
+                if (location == null)
+                {
+                    ModelState.AddModelError(nameof(model.IataCode), "This IATA code is not in the airport list.");
+                    return View(model);
+                }
+
+                await _countryRepository.AddAirportAsync(model, location);
                 return RedirectToAction(nameof(Details), new { id = model.CountryId });
             }
 
@@ -209,7 +218,6 @@ namespace TagusAir.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var airportHasFlights = await _countryRepository.AirportHasFlightsAsync(viewModel.AirportId);
 
                 if (airportHasFlights)
@@ -218,8 +226,18 @@ namespace TagusAir.Controllers
                     return View(viewModel);
                 }
 
+                var location = AirportCoordinates.GetAirportLocation(viewModel.IataCode);
+
+                if (location == null)
+                {
+                    ModelState.AddModelError(nameof(viewModel.IataCode), "This IATA code is not in the airport list.");
+                    return View(viewModel);
+                }
 
                 var airport = _converterHelper.ToAirport(viewModel);
+
+                airport.Latitude = location.Latitude;
+                airport.Longitude = location.Longitude;
 
                 var countryId = await _countryRepository.UpdateAirportAsync(airport);
 
@@ -227,9 +245,6 @@ namespace TagusAir.Controllers
                 {
                     return RedirectToAction(nameof(Details), new { id = countryId });
                 }
-
-
-
             }
 
             return View(viewModel);
