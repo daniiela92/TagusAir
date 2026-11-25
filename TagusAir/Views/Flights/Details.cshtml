@@ -1,7 +1,57 @@
 @model TagusAir.Data.Entities.Flight
 
+@using Syncfusion.EJ2.Maps
+
 @{
     ViewData["Title"] = "Flight details";
+
+    var hasCoordinates = Model.DepartureAirport.Latitude != 0 && Model.ArrivalAirport.Latitude != 0;
+
+    var latitudeSpan = Math.Abs(Model.DepartureAirport.Latitude - Model.ArrivalAirport.Latitude);
+    var longitudeSpan = Math.Abs(Model.DepartureAirport.Longitude - Model.ArrivalAirport.Longitude);
+    var isShortRoute = Math.Max(latitudeSpan, longitudeSpan) < 3;
+
+    var routeZoom = new MapsZoomSettings
+    {
+        Enable = true,
+        ShouldZoomInitially = !isShortRoute,
+        ZoomFactor = isShortRoute ? 6 : 1
+    };
+
+    var routeCenter = new MapsCenterPosition
+    {
+        Latitude = (Model.DepartureAirport.Latitude + Model.ArrivalAirport.Latitude) / 2,
+        Longitude = (Model.DepartureAirport.Longitude + Model.ArrivalAirport.Longitude) / 2
+    };
+
+    var routeLines = new List<MapsNavigationLine>
+    {
+        new MapsNavigationLine
+        {
+            Visible = true,
+            Latitude = new double[] { Model.DepartureAirport.Latitude, Model.ArrivalAirport.Latitude },
+            Longitude = new double[] { Model.DepartureAirport.Longitude, Model.ArrivalAirport.Longitude },
+            Color = "#3011BC",
+            Width = 3,
+            Angle = 0.3
+        }
+    };
+
+    var routeMarkers = new List<MapsMarker>
+    {
+        new MapsMarker
+        {
+            Visible = true,
+            Height = 14,
+            Width = 14,
+            Fill = "#FE7A15",
+            DataSource = new[]
+            {
+                new { latitude = Model.DepartureAirport.Latitude, longitude = Model.DepartureAirport.Longitude, name = Model.DepartureAirport.IataCode },
+                new { latitude = Model.ArrivalAirport.Latitude, longitude = Model.ArrivalAirport.Longitude, name = Model.ArrivalAirport.IataCode }
+            }
+        }
+    };
 }
 
 <section class="py-6">
@@ -97,7 +147,21 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm bg-soft-primary h-100">
+
+                @if (hasCoordinates)
+                {
+                    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                        <ejs-maps id="routeMap" height="320px" zoomSettings="routeZoom" centerPosition="routeCenter">
+                            <e-maps-layers>
+                                <e-maps-layer urlTemplate="https://tile.openstreetmap.org/level/tileX/tileY.png"
+                                              markerSettings="routeMarkers"
+                                              navigationLineSettings="routeLines"></e-maps-layer>
+                            </e-maps-layers>
+                        </ejs-maps>
+                    </div>
+                }
+
+                <div class="card border-0 shadow-sm bg-soft-primary">
                     <div class="card-body p-4 d-flex flex-column">
 
                         <h5 class="fw-bold mb-4">Fares</h5>
@@ -133,6 +197,7 @@
 
                     </div>
                 </div>
+
             </div>
 
         </div>

@@ -136,56 +136,49 @@ namespace TagusAir.Data
 
 
 
-
-            if (!_context.Countries.Any())
+            _context.Countries.Add(new Country
             {
-                _context.Countries.Add(new Country
+                Name = "Portugal",
+                FlagImageUrl = "/images/flags/pt.png",
+                Airports = new List<Airport>
                 {
-                    Name = "Portugal",
-                    FlagImageUrl = "/images/flags/pt.png",
-                    Airports = new List<Airport>
-                {
-                    new Airport { City = "Lisboa", Name = "Humberto Delgado", IataCode = "LIS" },
-                    new Airport { City = "Porto", Name = "Francisco Sá Carneiro", IataCode = "OPO" },
-                    new Airport { City = "Faro", Name = "Faro", IataCode = "FAO" }
+                    new Airport { City = "Lisboa", Name = "Humberto Delgado", IataCode = "LIS", Latitude = 38.7742, Longitude = -9.1342 },
+                    new Airport { City = "Porto", Name = "Francisco Sá Carneiro", IataCode = "OPO", Latitude = 41.2481, Longitude = -8.6814 },
+                    new Airport { City = "Faro", Name = "Faro", IataCode = "FAO", Latitude = 37.0144, Longitude = -7.9659 }
                 }
-                });
+            });
 
-                _context.Countries.Add(new Country
+            _context.Countries.Add(new Country
+            {
+                Name = "Spain",
+                FlagImageUrl = "/images/flags/es.png",
+                Airports = new List<Airport>
                 {
-                    Name = "Spain",
-                    FlagImageUrl = "/images/flags/es.png",
-                    Airports = new List<Airport>
-                {
-                    new Airport { City = "Madrid", Name = "Adolfo Suárez Barajas", IataCode = "MAD" },
-                    new Airport { City = "Barcelona", Name = "El Prat", IataCode = "BCN" }
+                    new Airport { City = "Madrid", Name = "Adolfo Suárez Barajas", IataCode = "MAD", Latitude = 40.4719, Longitude = -3.5626 },
+                    new Airport { City = "Barcelona", Name = "El Prat", IataCode = "BCN", Latitude = 41.2971, Longitude = 2.0785 }
                 }
-                });
+            });
 
-                _context.Countries.Add(new Country
+            _context.Countries.Add(new Country
+            {
+                Name = "France",
+                FlagImageUrl = "/images/flags/fr.png",
+                Airports = new List<Airport>
                 {
-                    Name = "France",
-                    FlagImageUrl = "/images/flags/fr.png",
-                    Airports = new List<Airport>
-                {
-                    new Airport { City = "Paris", Name = "Charles de Gaulle", IataCode = "CDG" }
+                    new Airport { City = "Paris", Name = "Charles de Gaulle", IataCode = "CDG", Latitude = 49.0097, Longitude = 2.5479 }
                 }
-                });
+            });
 
-                _context.Countries.Add(new Country
+            _context.Countries.Add(new Country
+            {
+                Name = "United Kingdom",
+                FlagImageUrl = "/images/flags/gb.png",
+                Airports = new List<Airport>
                 {
-                    Name = "United Kingdom",
-                    FlagImageUrl = "/images/flags/gb.png",
-                    Airports = new List<Airport>
-                {
-                     new Airport { City = "London", Name = "Heathrow", IataCode = "LHR" },
-                     new Airport { City = "London", Name = "Gatwick", IataCode = "LGW" }
+                    new Airport { City = "London", Name = "Heathrow", IataCode = "LHR", Latitude = 51.4700, Longitude = -0.4543 },
+                    new Airport { City = "London", Name = "Gatwick", IataCode = "LGW", Latitude = 51.1537, Longitude = -0.1821 }
                 }
-                });
-
-                await _context.SaveChangesAsync();
-            }
-
+            });
             if (!_context.Airplanes.Any())
             {
                 await AddAirplaneAsync("Airbus", "A320neo", 165, 15);
@@ -259,11 +252,11 @@ namespace TagusAir.Data
             }
 
 
-          
+
 
         }
 
-      
+
         private async Task AddAirplaneAsync(string brand, string model, int economySeats, int businessSeats)
         {
             await _airplaneRepository.CreateWithSeatsAsync(new Airplane
