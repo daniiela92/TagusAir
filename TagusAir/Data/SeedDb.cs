@@ -179,6 +179,8 @@ namespace TagusAir.Data
                     new Airport { City = "London", Name = "Gatwick", IataCode = "LGW", Latitude = 51.1537, Longitude = -0.1821 }
                 }
             });
+
+
             if (!_context.Airplanes.Any())
             {
                 await AddAirplaneAsync("Airbus", "A320neo", 165, 15);
@@ -266,7 +268,7 @@ namespace TagusAir.Data
                 EconomySeats = economySeats,
                 BusinessSeats = businessSeats,
                 IsActive = true,
-                ImageUrl = "/images/no_image.png"
+                
             });
         } 
 

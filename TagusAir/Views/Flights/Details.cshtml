@@ -133,8 +133,11 @@
                                 <img src="@Model.Airplane.ImageUrl"
                                      class="rounded border me-3"
                                      style="width: 80px; height: 54px; object-fit: cover;"
-                                     alt="@Model.Airplane.Brand @Model.Airplane.Model"
-                                     onerror="this.style.display='none'" />
+                                     alt="@Model.Airplane.Brand @Model.Airplane.Model" />
+                            }
+                            else
+                            {
+                                <span class="fas fa-plane text-800 me-3" style="font-size: 2rem;"></span>
                             }
                             <div>
                                 <div class="text-800 fs--1">Aircraft</div>
