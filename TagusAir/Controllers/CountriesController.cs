@@ -138,19 +138,34 @@ namespace TagusAir.Controllers
             if (country == null)
             {
                 return new NotFoundViewResult("CountryNotFound");
-
             }
 
-            var countryHasAirports = await _countryRepository.CountryHasAirportsAsync(id);
+            country.IsActive = false;
 
+            await _countryRepository.UpdateAsync(country);
 
-            if (countryHasAirports)
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activate(int? id)
+        {
+            if (id == null)
             {
-                ModelState.AddModelError(string.Empty, "This country cannot be deleted because it still has airports. Delete the airports first.");
-                return View(country);
+                return new NotFoundViewResult("CountryNotFound");
             }
 
-            await _countryRepository.DeleteAsync(country);
+            var country = await _countryRepository.GetByIdAsync(id.Value);
+
+            if (country == null)
+            {
+                return new NotFoundViewResult("CountryNotFound");
+            }
+
+            country.IsActive = true;
+
+            await _countryRepository.UpdateAsync(country);
 
             return RedirectToAction(nameof(Index));
         }

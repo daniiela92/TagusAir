@@ -240,6 +240,9 @@ namespace TagusAir.Migrations
                     b.Property<string>("FlagImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)

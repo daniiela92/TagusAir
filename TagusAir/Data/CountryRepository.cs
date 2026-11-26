@@ -43,11 +43,6 @@ namespace TagusAir.Data
                                                      || f.ArrivalAirportId == airportId);
         }
 
-        public async  Task<bool> CountryHasAirportsAsync(int countryId)
-        {
-            return await _context.Airports.AnyAsync(a => a.CountryId == countryId);
-        }
-
         public async Task<int> DeleteAirportAsync(Airport airport)
         {
             var country = await _context.Countries
@@ -103,11 +98,14 @@ namespace TagusAir.Data
 
         public IEnumerable<SelectListItem> GetComboCountries()
         {
-            var list = _context.Countries.Select(c => new SelectListItem
-            {
-                Text = c.Name,
-                Value = c.Id.ToString()
-            }).OrderBy(l => l.Text).ToList();
+        
+            var list = _context.Countries
+                .Where(c => c.IsActive)
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                }).OrderBy(l => l.Text).ToList();
 
             list.Insert(0, new SelectListItem
             {
@@ -117,6 +115,7 @@ namespace TagusAir.Data
 
             return list;
         }
+        
 
         public IQueryable GetCountriesWithAirports()
         {

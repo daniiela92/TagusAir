@@ -15,8 +15,10 @@
                         <div class="text-center mb-4">
                             <span class="fas fa-exclamation-triangle text-danger" style="font-size: 2.5rem;"></span>
                             <h2 class="fw-bold mt-3 mb-1">Delete this country?</h2>
-                            <p class="text-900 mb-0">This action cannot be undone.</p>
-                        </div>
+                            <p class="text-900 mb-0">
+                                The country will be deactivated and will no longer be available for new flights.
+                                You can reactivate it later.
+                            </p>
 
                         <div asp-validation-summary="ModelOnly" class="text-center mb-3"></div>
 
@@ -36,13 +38,6 @@
                                 <span class="fw-bold">@Model.Name</span>
                             </div>
 
-                            @if (Model.Airports != null && Model.Airports.Count > 0)
-                            {
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-800">Airports</span>
-                                    <span class="fw-bold">@Model.Airports.Count</span>
-                                </div>
-                            }
 
                         </div>
 

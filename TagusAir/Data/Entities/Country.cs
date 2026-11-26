@@ -18,6 +18,8 @@ namespace TagusAir.Data.Entities
         [Display(Name = "Number of Airports")]
         public int NumberOfAirports => Airports == null ? 0 : Airports.Count;
 
+        public bool IsActive { get; set; } = true;
+
         public override string ToString()
         {
             return Name;
