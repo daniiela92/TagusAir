@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Ticket details";
     var ticketReference = $"TAGUSAIR-{Model.Id}";
+    var isCancelled = Model.IsCanceled || !Model.Flight.IsActive;
 }
 
 <section class="py-6">
@@ -91,14 +92,27 @@
 
                         <h5 class="fw-bold mb-4 text-start">Boarding pass</h5>
 
-                        <div class="bg-white rounded p-3 d-inline-block mx-auto mb-3">
-                            <ejs-qrcodegenerator id="ticketQrCode"
-                                                 width="160px"
-                                                 height="160px"
-                                                 value="@ticketReference">
-                                <e-qrcodegenerator-displaytext visibility="false"></e-qrcodegenerator-displaytext>
-                            </ejs-qrcodegenerator>
-                        </div>
+                        @if (isCancelled)
+                        {
+                            <div class="bg-white rounded p-4 mx-auto mb-3">
+                                <span class="fas fa-ban text-danger" style="font-size: 3rem;"></span>
+                                <div class="fw-bold text-danger mt-3">
+                                    @(Model.IsCanceled ? "Ticket cancelled" : "Flight cancelled")
+                                </div>
+                                <div class="text-800 fs--1">This ticket is not valid for boarding.</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="bg-white rounded p-3 d-inline-block mx-auto mb-3">
+                                <ejs-qrcodegenerator id="ticketQrCode"
+                                                     width="160px"
+                                                     height="160px"
+                                                     value="@ticketReference">
+                                    <e-qrcodegenerator-displaytext visibility="false"></e-qrcodegenerator-displaytext>
+                                </ejs-qrcodegenerator>
+                            </div>
+                        }
 
                         <div class="text-800 fs--1">Ticket reference</div>
                         <div class="fw-bold mb-4">@ticketReference</div>

@@ -25,6 +25,8 @@ namespace TagusAir.Data.Entities
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime PurchaseDate { get; set; }
 
+        public bool IsCanceled { get; set; } 
+
 
 
 

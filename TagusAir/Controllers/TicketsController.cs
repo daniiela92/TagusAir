@@ -238,7 +238,8 @@ namespace TagusAir.Controllers
                 return new NotFoundViewResult("TicketNotFound");
             }
 
-            await _ticketRepository.DeleteAsync(ticket);
+            ticket.IsCanceled = true;
+            await _ticketRepository.UpdateAsync(ticket);
 
             return RedirectToAction(nameof(MyTickets));
 

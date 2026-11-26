@@ -341,6 +341,9 @@ namespace TagusAir.Migrations
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 

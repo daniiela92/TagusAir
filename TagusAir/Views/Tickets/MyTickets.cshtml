@@ -50,6 +50,8 @@
             @foreach (var item in Model)
             {
                 var isUpcoming = item.Flight.DepartureTime >= DateTime.Now;
+                var flightCancelled = !item.Flight.IsActive;
+                var canCancel = isUpcoming && !isStaff && !item.IsCanceled && !flightCancelled;
 
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body p-4">
@@ -100,7 +102,15 @@
                             </div>
 
                             <div class="col-md-2 text-md-end">
-                                @if (isUpcoming)
+                                @if (item.IsCanceled)
+                                {
+                                    <span class="badge bg-danger p-2">Cancelled</span>
+                                }
+                                else if (flightCancelled)
+                                {
+                                    <span class="badge bg-danger p-2">Flight cancelled</span>
+                                }
+                                else if (isUpcoming)
                                 {
                                     <span class="badge bg-primary p-2">Upcoming</span>
                                 }
@@ -113,7 +123,7 @@
                                     <a asp-action="Details" asp-route-id="@item.Id"
                                        class="btn btn-outline-dark btn-sm">Details</a>
 
-                                    @if (isUpcoming && !isStaff)
+                                    @if (canCancel)
                                     {
                                         <a asp-action="Cancel" asp-route-id="@item.Id"
                                            class="btn btn-outline-danger btn-sm">Cancel</a>

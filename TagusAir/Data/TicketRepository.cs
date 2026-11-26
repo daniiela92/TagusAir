@@ -43,7 +43,7 @@ namespace TagusAir.Data
 
         public async Task<bool> FlightHasTicketsAsync(int flightId)
         {
-            return await _context.Tickets.AnyAsync(t => t.FlightId == flightId);
+            return await _context.Tickets.AnyAsync(t => t.FlightId == flightId && !t.IsCanceled);
         }
 
         public async Task<List<Seat>> GetAvailableSeatsAsync(int flightId)
@@ -56,8 +56,8 @@ namespace TagusAir.Data
             }
 
             var soldTickets = _context.Tickets
-                .Where(t => t.FlightId == flightId)
-                .Select(t => t.SeatId);
+               .Where(t => t.FlightId == flightId && !t.IsCanceled)
+               .Select(t => t.SeatId);
 
             return await _context.Seats
                  .Where(s => s.AirplaneId == flight.AirplaneId && s.IsActive && !soldTickets.Contains(s.Id))
@@ -117,7 +117,8 @@ namespace TagusAir.Data
 
         public async Task<bool> IsSeatAvailableAsync(int flightId, int seatId)
         {
-            return !await _context.Tickets.AnyAsync(t => t.FlightId == flightId && t.SeatId == seatId);
+            return !await _context.Tickets.AnyAsync(t => t.FlightId == flightId
+            && !t.IsCanceled && t.SeatId == seatId);
         }
 
         public async Task<bool> UserHasTicketsAsync(string userId)
