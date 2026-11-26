@@ -54,13 +54,14 @@ namespace TagusAir.Data
                 return 0;
             }
 
-            _context.Airports.Remove(airport);
+            airport.IsActive = false;
+            _context.Airports.Update(airport);
             await _context.SaveChangesAsync();
 
             return country.Id;
         }
 
-   
+
 
         public async Task<Airport> GetAirportAsync(int id)
         {
@@ -76,7 +77,7 @@ namespace TagusAir.Data
             if (country != null)
             {
                 list = _context.Airports
-                    .Where(a => a.CountryId == countryId)
+                    .Where(a => a.CountryId == countryId && a.IsActive)
                     .ToList()
                     .Select(a => new SelectListItem
                     {

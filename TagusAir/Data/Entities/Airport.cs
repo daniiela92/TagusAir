@@ -29,6 +29,8 @@ namespace TagusAir.Data.Entities
         [Range(-180, 180)]
         public double Longitude { get; set; }
 
+        public bool IsActive { get; set; } = true; 
+
 
 
         public override string ToString()

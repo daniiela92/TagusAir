@@ -208,6 +208,7 @@ namespace TagusAir.Controllers
             var country = await _countryRepository.GetCountryWithAirportsAsync(countryId);
 
             return Json(country.Airports
+                .Where(a => a.IsActive)
                 .OrderBy(a => a.City)
                 .Select(a => new { a.Id, a.City, a.Name, a.IataCode }));
         }

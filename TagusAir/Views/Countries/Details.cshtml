@@ -53,6 +53,7 @@
                                 <th class="ps-4">City</th>
                                 <th>Airport</th>
                                 <th>IATA Code</th>
+                                <th>Status</th>
                                 <th class="text-end pe-4"></th>
                             </tr>
                         </thead>
@@ -65,11 +66,31 @@
                                     <td>
                                         <span class="badge bg-soft-primary text-primary">@airport.IataCode</span>
                                     </td>
+                                    <td>
+                                        @if (airport.IsActive)
+                                        {
+                                            <span class="badge bg-primary">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-soft-secondary text-secondary">Inactive</span>
+                                        }
+                                    </td>
                                     <td class="text-end pe-4 text-nowrap">
                                         <a asp-action="EditAirport" asp-route-id="@airport.Id"
                                            class="btn btn-sm btn-outline-primary">Edit</a>
-                                        <a asp-action="DeleteAirport" asp-route-id="@airport.Id"
-                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                        @if (airport.IsActive)
+                                        {
+                                            <a asp-action="DeleteAirport" asp-route-id="@airport.Id"
+                                               class="btn btn-sm btn-outline-danger">Delete</a>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ActivateAirport" asp-route-id="@airport.Id" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-dark">Activate</button>
+                                            </form>
+                                        }
                                     </td>
                                 </tr>
                             }

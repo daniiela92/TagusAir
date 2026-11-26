@@ -305,6 +305,28 @@ namespace TagusAir.Controllers
 
             return RedirectToAction(nameof(Details), new { id = countryId });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActivateAirport(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("AirportNotFound");
+            }
+
+            var airport = await _countryRepository.GetAirportAsync(id.Value);
+
+            if (airport == null)
+            {
+                return new NotFoundViewResult("AirportNotFound");
+            }
+
+            airport.IsActive = true;
+            var countryId = await _countryRepository.UpdateAirportAsync(airport);
+
+            return RedirectToAction(nameof(Details), new { id = countryId });
+        }
     }
 }
 
