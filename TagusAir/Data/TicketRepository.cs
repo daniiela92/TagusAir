@@ -21,7 +21,7 @@ namespace TagusAir.Data
 
             var seat = await _context.Seats.FindAsync(seatId);
 
-            if(flight == null || seat == null)
+            if(flight == null || !flight.IsActive || seat == null || !seat.IsActive)
             {
                 return null!; 
             }
@@ -60,7 +60,7 @@ namespace TagusAir.Data
                 .Select(t => t.SeatId);
 
             return await _context.Seats
-                 .Where(s => s.AirplaneId == flight.AirplaneId && !soldTickets.Contains(s.Id))
+                 .Where(s => s.AirplaneId == flight.AirplaneId && s.IsActive && !soldTickets.Contains(s.Id))
                  .OrderBy(s => s.Class)
                  .ThenBy(s => s.Code)
                  .ToListAsync();

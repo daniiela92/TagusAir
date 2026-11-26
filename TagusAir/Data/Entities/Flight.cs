@@ -50,6 +50,8 @@ namespace TagusAir.Data.Entities
         [Display(Name = "Duration")]
         public TimeSpan Duration => ArrivalTime - DepartureTime;
 
+        public bool IsActive { get; set; } = true; 
+
         public override string ToString()
         {
             return $"{FlightNumber} ({DepartureTime:dd/MM/yyyy HH:mm})";

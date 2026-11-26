@@ -23,6 +23,8 @@ namespace TagusAir.Data.Entities
 
         public SeatClass Class { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public override string ToString()
         {
             return $"{Code} ({Class})";

@@ -38,6 +38,12 @@ namespace TagusAir.Data
 
         public IQueryable<Flight> GetAvailableFlights()
         {
+            return this.GetUpcomingFlights()
+                .Where(f => f.IsActive);
+        }
+
+        public IQueryable<Flight> GetUpcomingFlights()
+        {
             return this.GetAllWithDetails()
                 .Where(f => f.DepartureTime > DateTime.Now);
         }

@@ -1,7 +1,7 @@
 @model TagusAir.Data.Entities.Flight
 
 @{
-    ViewData["Title"] = "Delete flight";
+    ViewData["Title"] = "Cancel flight";
 }
 
 <section class="py-7">
@@ -14,8 +14,8 @@
 
                         <div class="text-center mb-4">
                             <span class="fas fa-exclamation-triangle text-danger" style="font-size: 2.5rem;"></span>
-                            <h2 class="fw-bold mt-3 mb-1">Delete this flight?</h2>
-                            <p class="text-900 mb-0">This action cannot be undone.</p>
+                            <h2 class="fw-bold mt-3 mb-1">Cancel this flight?</h2>
+                            <p class="text-900 mb-0">It will no longer be available for sale. You can reactivate it later.</p>
                         </div>
 
                         <div asp-validation-summary="ModelOnly" class="text-center mb-3"></div>
@@ -48,12 +48,12 @@
 
                         </div>
 
-                        <form asp-action="Delete" method="post">
+                        <form asp-action="Cancel" method="post">
                             <input type="hidden" asp-for="Id" />
 
                             <div class="d-flex justify-content-end gap-2">
-                                <a asp-action="Index" class="btn btn-outline-dark">Cancel</a>
-                                <button type="submit" class="btn btn-danger">Delete flight</button>
+                                <a asp-action="Index" class="btn btn-outline-dark">Back</a>
+                                <button type="submit" class="btn btn-danger">Cancel flight</button>
                             </div>
                         </form>
 

@@ -11,6 +11,8 @@ namespace TagusAir.Data
 
         IQueryable<Flight> GetAvailableFlights();
 
+        IQueryable<Flight> GetUpcomingFlights();
+
         IQueryable<Flight> SearchFlights(DateTime? date, int? originAirportId, int? destinationAirportId);
         IEnumerable<SelectListItem> GetComboAirplanes();
 

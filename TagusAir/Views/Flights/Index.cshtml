@@ -65,8 +65,19 @@
                             <div class="col-lg-3 text-lg-end">
                                 <h4 class="text-primary fw-bolder mb-3">@item.BasePrice.ToString("C2")</h4>
 
-                                <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@item.Id"
-                                   class="btn btn-secondary btn-sm mb-1">Buy</a>
+                                @if (!item.IsActive)
+                                {
+                                    <div class="mb-2">
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    </div>
+                                }
+
+                                @if (item.IsActive)
+                                {
+                                    <a asp-controller="Tickets" asp-action="Buy" asp-route-id="@item.Id"
+                                       class="btn btn-secondary btn-sm mb-1">Buy</a>
+                                }
+
                                 <a asp-action="Details" asp-route-id="@item.Id"
                                    class="btn btn-outline-dark btn-sm mb-1">Details</a>
 
@@ -74,8 +85,19 @@
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.Id"
                                        class="btn btn-outline-primary btn-sm mb-1">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"
-                                       class="btn btn-outline-danger btn-sm mb-1">Delete</a>
+
+                                    @if (item.IsActive)
+                                    {
+                                        <a asp-action="Cancel" asp-route-id="@item.Id"
+                                           class="btn btn-outline-danger btn-sm mb-1">Cancel flight</a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Activate" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-dark btn-sm mb-1">Activate</button>
+                                        </form>
+                                    }
                                 }
                             </div>
 

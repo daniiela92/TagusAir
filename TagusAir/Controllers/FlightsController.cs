@@ -28,6 +28,11 @@ namespace TagusAir.Controllers
         }
         public IActionResult Index()
         {
+            if (this.User.IsInRole("Employee"))
+            {
+                return View(_flightRepository.GetUpcomingFlights());
+            }
+
             return View(_flightRepository.GetAvailableFlights());
         }
 
@@ -163,7 +168,7 @@ namespace TagusAir.Controllers
         }
 
         [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Cancel(int? id)
         {
             if (id == null)
             {
@@ -177,28 +182,22 @@ namespace TagusAir.Controllers
             }
             return View(flight);
         }
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Cancel")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> CancelConfirmed(int id)
         {
-            var flight = await _flightRepository.GetFlightWithDetailsAsync(id);
+            var flight = await _flightRepository.GetByIdAsync(id);
 
             if (flight == null)
             {
                 return new NotFoundViewResult("FlightNotFound");
             }
 
-            var flightHasTickets = await _ticketRepository.FlightHasTicketsAsync(id);
+            flight.IsActive = false;
 
-            if (flightHasTickets)
-            {
-                ModelState.AddModelError(string.Empty, "This flight has sold tickets and cannot be deleted.");
-                return View(flight);
-            }
+            await _flightRepository.UpdateAsync(flight);
 
-            await _flightRepository.DeleteAsync(flight);
             return RedirectToAction(nameof(Index));
         }
 
@@ -211,6 +210,30 @@ namespace TagusAir.Controllers
             return Json(country.Airports
                 .OrderBy(a => a.City)
                 .Select(a => new { a.Id, a.City, a.Name, a.IataCode }));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
+        public async Task<IActionResult> Activate(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("FlightNotFound");
+            }
+
+            var flight = await _flightRepository.GetByIdAsync(id.Value);
+
+            if (flight == null)
+            {
+                return new NotFoundViewResult("FlightNotFound");
+            }
+
+            flight.IsActive = true;
+
+            await _flightRepository.UpdateAsync(flight);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
