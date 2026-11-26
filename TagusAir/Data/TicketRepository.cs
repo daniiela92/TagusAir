@@ -121,9 +121,6 @@ namespace TagusAir.Data
             && !t.IsCanceled && t.SeatId == seatId);
         }
 
-        public async Task<bool> UserHasTicketsAsync(string userId)
-        {
-            return await _context.Tickets.AnyAsync(u => u.UserId == userId);
-        }
+      
     }
 }

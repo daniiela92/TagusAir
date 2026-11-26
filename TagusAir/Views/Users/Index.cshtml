@@ -25,6 +25,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone Number</th>
+                            <th>Status</th>
                             <th class="text-end pe-4"></th>
                         </tr>
                     </thead>
@@ -32,7 +33,7 @@
                         @if (!Model.Employees.Any())
                         {
                             <tr>
-                                <td colspan="5" class="text-center text-900 py-4">No employees yet.</td>
+                                <td colspan="6" class="text-center text-900 py-4">No employees yet.</td>
                             </tr>
                         }
 
@@ -53,11 +54,31 @@
                                 <td class="fw-bold">@item.FullName</td>
                                 <td>@item.Email</td>
                                 <td>@item.PhoneNumber</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-primary">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-soft-secondary text-secondary">Inactive</span>
+                                    }
+                                </td>
                                 <td class="text-end pe-4 text-nowrap">
                                     <a asp-action="Edit" asp-route-id="@item.Id"
                                        class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                    @if (item.IsActive)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Activate" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-dark">Activate</button>
+                                        </form>
+                                    }
                                 </td>
                             </tr>
                         }
@@ -78,6 +99,7 @@
                             <th>Email</th>
                             <th>Phone Number</th>
                             <th>Passport</th>
+                            <th>Status</th>
                             <th class="text-end pe-4"></th>
                         </tr>
                     </thead>
@@ -85,7 +107,7 @@
                         @if (!Model.Customers.Any())
                         {
                             <tr>
-                                <td colspan="6" class="text-center text-900 py-4">No customers yet.</td>
+                                <td colspan="7" class="text-center text-900 py-4">No customers yet.</td>
                             </tr>
                         }
 
@@ -107,11 +129,31 @@
                                 <td>@item.Email</td>
                                 <td>@item.PhoneNumber</td>
                                 <td>@item.Passport</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-primary">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-soft-secondary text-secondary">Inactive</span>
+                                    }
+                                </td>
                                 <td class="text-end pe-4 text-nowrap">
                                     <a asp-action="Edit" asp-route-id="@item.Id"
                                        class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                    @if (item.IsActive)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Activate" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-dark">Activate</button>
+                                        </form>
+                                    }
                                 </td>
                             </tr>
                         }

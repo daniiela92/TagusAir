@@ -50,6 +50,14 @@ namespace TagusAir.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
+                if (user != null && !user.IsActive)
+                {
+                    ModelState.AddModelError(string.Empty, "This account has been deactivated.");
+                    return View(model);
+                }
+
                 var result = await _userHelper.LoginAsync(model);
 
                 if (result.Succeeded)
@@ -195,6 +203,36 @@ namespace TagusAir.Controllers
             }
 
             return View(viewModel);
+        }
+
+        [Authorize]
+        public IActionResult CloseAccount()
+        {
+            return View();
+        }
+
+        [HttpPost, ActionName("CloseAccount")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseAccountConfirmed()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+            if (user != null)
+            {
+                if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
+                {
+                    ModelState.AddModelError(string.Empty, "Administrator accounts cannot be closed here.");
+                    return View();
+                }
+
+                user.IsActive = false;
+                await _userHelper.UpdateUserAsync(user);
+            }
+
+            await _userHelper.LogoutAsync();
+
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]

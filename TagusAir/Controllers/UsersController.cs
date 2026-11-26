@@ -15,20 +15,20 @@ namespace TagusAir.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly IConverterHelper _converterHelper;
-        private readonly ITicketRepository _ticketRepository;
+       
         private readonly IImageHelper _imageHelper;
 
         public UsersController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
             IConverterHelper converterHelper,
-            ITicketRepository ticketRepository,
+            
             IImageHelper imageHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _converterHelper = converterHelper;
-            _ticketRepository = ticketRepository;
+           
             _imageHelper = imageHelper;
         }
         public async Task<IActionResult> Index()
@@ -205,7 +205,6 @@ namespace TagusAir.Controllers
 
             return View(_converterHelper.ToEditUserViewModel(user));
         }
-
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -213,23 +212,38 @@ namespace TagusAir.Controllers
         {
             var user = await _userHelper.GetUserByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return new NotFoundViewResult("UserNotFound");
             }
 
-            var userHasTickets = await _ticketRepository.UserHasTicketsAsync(id);
-
-            if(userHasTickets)
+            if (user.Email == this.User.Identity.Name)
             {
-                ModelState.AddModelError(string.Empty, "This user has tickets and cannot be deleted.");
+                ModelState.AddModelError(string.Empty, "You cannot deactivate your own account.");
                 return View(_converterHelper.ToEditUserViewModel(user));
             }
 
-            await _userHelper.DeleteUserAsync(user);
+            user.IsActive = false;
+            await _userHelper.UpdateUserAsync(user);
 
             return RedirectToAction(nameof(Index));
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activate(string id)
+        {
+            var user = await _userHelper.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                return new NotFoundViewResult("UserNotFound");
+            }
+
+            user.IsActive = true;
+            await _userHelper.UpdateUserAsync(user);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

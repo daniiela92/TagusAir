@@ -13,8 +13,6 @@ namespace TagusAir.Data
 
         Task<List<Ticket>> GetTicketsByUserAsync(string userId);
 
-        Task<bool> UserHasTicketsAsync(string userId);
-
         Task<bool> FlightHasTicketsAsync(int flightId);
 
         Task<IQueryable<Ticket>> GetTicketsAsync(string userName);

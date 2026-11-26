@@ -21,5 +21,7 @@ namespace TagusAir.Data.Entities
 
         public string? ImageUrl { get; set; }
 
+        public bool IsActive { get; set; } = true; 
+
     }
 }
