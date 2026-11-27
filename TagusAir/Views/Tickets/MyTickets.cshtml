@@ -52,6 +52,7 @@
                 var isUpcoming = item.Flight.DepartureTime >= DateTime.Now;
                 var flightCancelled = !item.Flight.IsActive;
                 var canCancel = isUpcoming && !isStaff && !item.IsCanceled && !flightCancelled;
+                var canChange = isUpcoming && !item.IsCanceled && !flightCancelled;
 
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body p-4">
@@ -127,6 +128,11 @@
                                     {
                                         <a asp-action="Cancel" asp-route-id="@item.Id"
                                            class="btn btn-outline-danger btn-sm">Cancel</a>
+                                    }
+                                    @if (canChange)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-outline-primary btn-sm">Change seat</a>
                                     }
                                 </div>
 

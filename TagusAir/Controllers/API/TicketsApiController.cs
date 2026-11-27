@@ -37,7 +37,7 @@ namespace TagusAir.Controllers.API
 
             var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
 
-            var futureFlights = tickets.Where(t => t.Flight.DepartureTime > DateTime.Now)
+            var futureFlights = tickets.Where(t => !t.IsCanceled && t.Flight.DepartureTime > DateTime.Now)
                 .Select(t => new
                 {
                     t.Id,
@@ -75,6 +75,10 @@ namespace TagusAir.Controllers.API
 
             var boughtTicket = await _ticketRepository.BuyTicketsAsync(flightId, seatId, user.Id);
 
+            if (boughtTicket == null)
+            {
+                return BadRequest("This flight or seat is no longer available.");
+            }
 
             var result = new
             {
@@ -82,6 +86,7 @@ namespace TagusAir.Controllers.API
                 boughtTicket.Price,
                 boughtTicket.PurchaseDate
             };
+
             return Ok(result);
         }
 
@@ -95,19 +100,21 @@ namespace TagusAir.Controllers.API
                 return NotFound();
             }
 
-            var ticket = await _ticketRepository.GetByIdAsync(id);
+            var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+            var ticket = tickets.FirstOrDefault(t => t.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();
             }
 
-
-            if (ticket.UserId != user.Id)
+            if (ticket.IsCanceled)
             {
-                return Forbid();
+                return BadRequest("This ticket has already been canceled.");
             }
 
-            await _ticketRepository.DeleteAsync(ticket);
+            ticket.IsCanceled = true;
+            await _ticketRepository.UpdateAsync(ticket);
 
             return NoContent();
         }
@@ -116,32 +123,51 @@ namespace TagusAir.Controllers.API
         public async Task<IActionResult> ChangeSeat(int id, int seatId)
         {
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
             if (user == null)
             {
                 return NotFound();
             }
-            var ticket = await _ticketRepository.GetByIdAsync(id);
+
+            var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+            var ticket = tickets.FirstOrDefault(t => t.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();
             }
-            if (ticket.UserId != user.Id)
+
+            if (ticket.IsCanceled)
             {
-                return Forbid();
+                return BadRequest("This ticket has been canceled.");
             }
 
-            if(ticket.SeatId == seatId)
+            if (ticket.Flight.DepartureTime <= DateTime.Now)
+            {
+                return BadRequest("This ticket cannot be changed after the flight has started.");
+            }
+
+            if (ticket.SeatId == seatId)
             {
                 return BadRequest("You are already assigned to this seat.");
             }
 
-            var isSeatAvailable = await _ticketRepository.IsSeatAvailableAsync(ticket.FlightId, seatId);
-            if (!isSeatAvailable)
+            var availableSeats = await _ticketRepository.GetAvailableSeatsAsync(ticket.FlightId);
+            var newSeat = availableSeats.FirstOrDefault(s => s.Id == seatId);
+
+            if (newSeat == null)
             {
                 return BadRequest("This seat is no longer available.");
             }
-            ticket.SeatId = seatId;
+
+            if (newSeat.Class != ticket.Seat.Class)
+            {
+                return BadRequest("You can only move to a seat in the same class.");
+            }
+
+            ticket.SeatId = newSeat.Id;
             await _ticketRepository.UpdateAsync(ticket);
+
             return NoContent();
         }
     }

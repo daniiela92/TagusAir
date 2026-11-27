@@ -344,6 +344,12 @@ namespace TagusAir.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
                 if (user != null)
                 {
+
+                    if (!user.IsActive)
+                    {
+                        return BadRequest();
+                    }
+
                     var result = await _userHelper.ValidatePasswordAsync(
                         user,
                         model.Password);

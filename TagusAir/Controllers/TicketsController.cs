@@ -59,11 +59,14 @@ namespace TagusAir.Controllers
         }
 
 
-        private async Task<IEnumerable<SelectListItem>> GetSeatsComboAsync(int flightId)
+        private async Task<IEnumerable<SelectListItem>> GetSeatsComboAsync(int flightId, SeatClass? seatClass = null)
         {
-
             var seats = await _ticketRepository.GetAvailableSeatsAsync(flightId);
 
+            if (seatClass != null)
+            {
+                seats = seats.Where(s => s.Class == seatClass).ToList();
+            }
 
             var list = seats
                 .Select(s => new SelectListItem
@@ -80,8 +83,6 @@ namespace TagusAir.Controllers
             });
 
             return list;
-
-
         }
 
         [HttpPost]
@@ -263,7 +264,87 @@ namespace TagusAir.Controllers
 
             return View(ticket);
         }
+        [Authorize(Roles = "Employee,Customer")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("TicketNotFound");
+            }
 
+            var tickets = await _ticketRepository.GetTicketsAsync(this.User.Identity.Name);
+            var ticket = await tickets.FirstOrDefaultAsync(t => t.Id == id.Value);
+
+            if (ticket == null)
+            {
+                return new NotFoundViewResult("TicketNotFound");
+            }
+
+            if (ticket.IsCanceled || ticket.Flight.DepartureTime <= DateTime.Now)
+            {
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var viewModel = new EditTicketViewModel
+            {
+                Id = ticket.Id,
+                Flight = ticket.Flight,
+                CurrentSeat = ticket.Seat.Code,
+                Seats = await GetSeatsComboAsync(ticket.FlightId, ticket.Seat.Class)
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Employee,Customer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditTicketViewModel viewModel)
+        {
+            var tickets = await _ticketRepository.GetTicketsAsync(this.User.Identity.Name);
+            var ticket = await tickets.FirstOrDefaultAsync(t => t.Id == viewModel.Id);
+
+            if (ticket == null)
+            {
+                return new NotFoundViewResult("TicketNotFound");
+            }
+
+            if (ticket.IsCanceled || ticket.Flight.DepartureTime <= DateTime.Now)
+            {
+                ModelState.AddModelError(string.Empty, "This ticket cannot be changed after the flight has started.");
+            }
+            else if (viewModel.SeatId == 0)
+            {
+                ModelState.AddModelError(string.Empty, "You must select a seat.");
+            }
+            else
+            {
+                var availableSeats = await _ticketRepository.GetAvailableSeatsAsync(ticket.FlightId);
+                var newSeat = availableSeats.FirstOrDefault(s => s.Id == viewModel.SeatId);
+
+                if (newSeat == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Sorry, this seat has been taken.");
+                }
+                else if (newSeat.Class != ticket.Seat.Class)
+                {
+                    ModelState.AddModelError(string.Empty, "You can only move to a seat in the same class.");
+                }
+                else
+                {
+                    ticket.SeatId = newSeat.Id;
+                    await _ticketRepository.UpdateAsync(ticket);
+
+                    return RedirectToAction(nameof(Details), new { id = ticket.Id });
+                }
+            }
+
+            viewModel.Flight = ticket.Flight;
+            viewModel.CurrentSeat = ticket.Seat.Code;
+            viewModel.Seats = await GetSeatsComboAsync(ticket.FlightId, ticket.Seat.Class);
+
+            return View(viewModel);
+        }
 
     }
 }
