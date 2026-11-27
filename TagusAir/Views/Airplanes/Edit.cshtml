@@ -37,25 +37,25 @@
                                     <input asp-for="Model" class="form-control form-voyage-control" />
                                     <span asp-validation-for="Model" class="text-danger"></span>
                                 </div>
-
                                 <div class="col-12">
                                     <div class="bg-light border rounded p-3">
-                                        <div class="row">
+                                        <div class="row g-3">
                                             <div class="col-sm-6">
-                                                <span class="text-800 fs--1 d-block">@Html.DisplayNameFor(m => m.EconomySeats)</span>
-                                                <span class="fw-bold">@Model.EconomySeats</span>
-                                                <input type="hidden" asp-for="EconomySeats" />
+                                                <label asp-for="EconomySeats" class="form-label fw-medium"></label>
+                                                <input asp-for="EconomySeats" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="EconomySeats" class="text-danger"></span>
                                             </div>
                                             <div class="col-sm-6">
-                                                <span class="text-800 fs--1 d-block">@Html.DisplayNameFor(m => m.BusinessSeats)</span>
-                                                <span class="fw-bold">@Model.BusinessSeats</span>
-                                                <input type="hidden" asp-for="BusinessSeats" />
+                                                <label asp-for="BusinessSeats" class="form-label fw-medium"></label>
+                                                <input asp-for="BusinessSeats" class="form-control form-voyage-control" />
+                                                <span asp-validation-for="BusinessSeats" class="text-danger"></span>
                                             </div>
                                         </div>
 
                                         <p class="text-800 fs--1 mb-0 mt-3">
                                             <span class="fas fa-info-circle me-1"></span>
-                                            Seat numbers cannot be changed after the airplane is created.
+                                            Changing these numbers reseats passengers on flights that have not departed yet.
+                                            They are notified by email.
                                         </p>
                                     </div>
                                 </div>

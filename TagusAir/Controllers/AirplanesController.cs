@@ -15,16 +15,19 @@ public class AirplanesController : Controller
     private readonly IAirplaneRepository _airplaneRepository;
     private readonly IImageHelper _imageHelper;
     private readonly IConverterHelper _converterHelper;
+    private readonly IMailHelper _mailHelper;
 
     public AirplanesController(
         IAirplaneRepository airplaneRepository, 
         IImageHelper imageHelper,
-        IConverterHelper converterHelper)
+        IConverterHelper converterHelper,
+        IMailHelper mailHelper)
     {
         
         _airplaneRepository = airplaneRepository;
         _imageHelper = imageHelper;
        _converterHelper = converterHelper;
+        _mailHelper = mailHelper;
     }
 
     // GET: AIRPLANES
@@ -127,7 +130,60 @@ public class AirplanesController : Controller
 
                 var airplane = _converterHelper.ToAirplane(viewModel, path, false);
 
-                await _airplaneRepository.UpdateAsync(airplane);
+                var reseatedTickets = await _airplaneRepository.UpdateWithSeatsAsync(airplane);
+
+                foreach (var ticket in reseatedTickets)
+                {
+                    var flightNumber = ticket.Flight.FlightNumber;
+                    var route = $"{ticket.Flight.DepartureAirport.City} to {ticket.Flight.ArrivalAirport.City}";
+                    var departureDate = ticket.Flight.DepartureTime.ToString("dd/MM/yyyy");
+                    var departureTime = ticket.Flight.DepartureTime.ToString("HH:mm");
+
+                    string subject;
+                    string body;
+
+                    if (ticket.IsCanceled)
+                    {
+                        subject = $"Your booking on flight {flightNumber} has been cancelled";
+
+                        body = $@"
+                         <p>Dear {ticket.User.FirstName},</p>
+
+                         <p>We had to change the aircraft operating flight <strong>{flightNumber}</strong>,
+                         {route}, departing on {departureDate} at {departureTime}.</p>
+
+                        <p>The new aircraft has fewer seats in {ticket.Seat.Class} class, and we were not
+                        able to keep a seat for you. Your ticket has been cancelled.</p>
+
+                        <p>We are truly sorry for the inconvenience. Please get in touch with us and we
+                        will find you a seat on another flight or arrange your refund, whichever suits
+                        you best.</p>
+
+                         <p>Kind regards,<br />The TagusAir team</p>";
+                    }
+                    else
+                    {
+                        subject = $"Your seat on flight {flightNumber} has changed";
+
+                        body = $@"
+                        <p>Dear {ticket.User.FirstName},</p>
+
+                        <p>We had to change the aircraft operating flight <strong>{flightNumber}</strong>,
+                        {route}, departing on {departureDate} at {departureTime}.</p>
+
+                        <p>The new aircraft has a different seat layout, so we moved you to
+                        seat <strong>{ticket.Seat.Code}</strong>, still in {ticket.Seat.Class} class.
+                        Everything else about your booking stays exactly the same.</p>
+
+                        <p>You can see your updated boarding pass at any time under My Tickets.</p>
+
+                        <p>We are sorry for the change, and we look forward to welcoming you on board.</p>
+
+                        <p>Kind regards,<br />The TagusAir team</p>";
+                    }
+
+                    _mailHelper.SendEmail(ticket.User.Email, subject, body);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {

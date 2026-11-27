@@ -27,10 +27,10 @@ namespace TagusAir.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Ticket>().
-                HasIndex(t => new { t.FlightId, t.SeatId }).
-                IsUnique();
+            modelBuilder.Entity<Ticket>()
+                .HasIndex(t => new { t.FlightId, t.SeatId })
+                .IsUnique()
+                .HasFilter("[IsCanceled] = 0");
 
             var cascadeFKs = modelBuilder.Model
      .GetEntityTypes()

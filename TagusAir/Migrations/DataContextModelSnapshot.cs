@@ -364,7 +364,8 @@ namespace TagusAir.Migrations
                     b.HasIndex("UserId");
 
                     b.HasIndex("FlightId", "SeatId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsCanceled] = 0");
 
                     b.ToTable("Tickets");
                 });
