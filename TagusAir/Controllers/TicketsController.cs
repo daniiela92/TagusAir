@@ -18,15 +18,21 @@ namespace TagusAir.Controllers
         private readonly ITicketRepository _ticketRepository;
         private readonly IFlightRepository _flightRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IMailHelper _mailHelper;
+        private readonly IPdfHelper _pdfHelper;
 
         public TicketsController(
             ITicketRepository ticketRepository,
             IFlightRepository flightRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IMailHelper mailHelper,
+            IPdfHelper pdfHelper)
         {
             _ticketRepository = ticketRepository;
             _flightRepository = flightRepository;
             _userHelper = userHelper;
+            _mailHelper = mailHelper;
+            _pdfHelper = pdfHelper;
         }
 
         public async Task<ActionResult> Buy(int? id)
@@ -91,9 +97,7 @@ namespace TagusAir.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var seatAvailable = await _ticketRepository.IsSeatAvailableAsync(viewModel.FlightId, viewModel.SeatId);
-
 
                 if (viewModel.SeatId == 0)
                 {
@@ -117,11 +121,37 @@ namespace TagusAir.Controllers
                         }
                         else
                         {
+                            var tickets = await _ticketRepository.GetTicketsByUserAsync(user.Id);
+                            var fullTicket = tickets.FirstOrDefault(t => t.Id == ticket.Id);
+
+                            if (fullTicket != null)
+                            {
+                                var passengerName = $"{user.FirstName} {user.LastName}";
+                                var pdf = _pdfHelper.GenerateTicketPdf(fullTicket, passengerName);
+
+                                var subject = $"Your ticket for flight {fullTicket.Flight.FlightNumber}";
+
+                                var body = $@"
+                            <p>Dear {user.FirstName},</p>
+
+                            <p>Thank you for flying with us. Your boarding pass for flight
+                            <strong>{fullTicket.Flight.FlightNumber}</strong>,
+                            {fullTicket.Flight.DepartureAirport.City} to {fullTicket.Flight.ArrivalAirport.City}
+                            on {fullTicket.Flight.DepartureTime:dd/MM/yyyy} at
+                            {fullTicket.Flight.DepartureTime:HH:mm}, is attached to this email.</p>
+
+                            <p>Your seat is <strong>{fullTicket.Seat.Code}</strong>, in
+                            {fullTicket.Seat.Class} class.</p>
+
+                            <p>Have a good trip,<br />The TagusAir team</p>";
+
+                                _mailHelper.SendEmail(user.Email, subject, body, pdf, $"TagusAir-{ticket.Id}.pdf");
+                            }
+
                             return RedirectToAction(nameof(Details), new { id = ticket.Id });
                         }
                     }
                 }
-                
             }
 
             viewModel.Flight = await _flightRepository.GetFlightWithDetailsAsync(viewModel.FlightId);

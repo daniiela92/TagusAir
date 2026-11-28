@@ -13,7 +13,7 @@ namespace TagusAir.Helpers
         }
 
 
-        public Response SendEmail(string to, string subject, string body)
+        public Response SendEmail(string to, string subject, string body, byte[] attachment = null, string attachmentName = null)
         {
 
             var nameFrom = _configuration["Mail:NameFrom"];
@@ -32,6 +32,12 @@ namespace TagusAir.Helpers
             {
                 HtmlBody = body,
             };
+
+            if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                bodybuilder.Attachments.Add(attachmentName, attachment, ContentType.Parse("application/pdf"));
+            }
+
             message.Body = bodybuilder.ToMessageBody();
 
             try

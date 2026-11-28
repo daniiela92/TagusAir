@@ -60,6 +60,8 @@ builder.Services.AddScoped<IConverterHelper, ConverterHelper>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddScoped<IPdfHelper, PdfHelper>();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
