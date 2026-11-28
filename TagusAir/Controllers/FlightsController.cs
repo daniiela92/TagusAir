@@ -13,18 +13,21 @@ namespace TagusAir.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly ICountryRepository _countryRepository;
         private readonly ITicketRepository _ticketRepository;
+        private readonly IMailHelper _mailHelper;
 
         public FlightsController(
             IFlightRepository flightRepository,
             IConverterHelper converterHelper,
             ICountryRepository countryRepository,
-            ITicketRepository ticketRepository
+            ITicketRepository ticketRepository,
+            IMailHelper mailHelper
             )
         {
             _flightRepository = flightRepository;
             _converterHelper = converterHelper;
             _countryRepository = countryRepository;
             _ticketRepository = ticketRepository;
+            _mailHelper = mailHelper;
         }
         public IActionResult Index()
         {
@@ -140,7 +143,9 @@ namespace TagusAir.Controllers
 
                 if (hasTickets)
                 {
-                    var flightToUpdate = await _flightRepository.GetByIdAsync(viewModel.Id);
+                    var flightToUpdate = await _flightRepository.GetFlightWithDetailsAsync(viewModel.Id);
+
+                    var oldDepartureTime = flightToUpdate.DepartureTime;
 
                     flightToUpdate.DepartureTime = viewModel.DepartureTime;
                     flightToUpdate.ArrivalTime = viewModel.ArrivalTime;
@@ -148,12 +153,39 @@ namespace TagusAir.Controllers
 
                     await _flightRepository.UpdateAsync(flightToUpdate);
 
+                    if (oldDepartureTime != flightToUpdate.DepartureTime)
+                    {
+                        var tickets = await _ticketRepository.GetTicketsByFlightAsync(flightToUpdate.Id);
+
+                        foreach (var ticket in tickets)
+                        {
+                            var subject = $"New departure time for flight {flightToUpdate.FlightNumber}";
+
+                            var body = $@"
+                        <p>Dear {ticket.User.FirstName},</p>
+
+                        <p>The departure time of flight <strong>{flightToUpdate.FlightNumber}</strong>,
+                        {flightToUpdate.DepartureAirport.City} to {flightToUpdate.ArrivalAirport.City},
+                        has changed.</p>
+
+                        <p>It now departs on <strong>{flightToUpdate.DepartureTime:dd/MM/yyyy}</strong> at
+                        <strong>{flightToUpdate.DepartureTime:HH:mm}</strong>, instead of
+                        {oldDepartureTime:dd/MM/yyyy} at {oldDepartureTime:HH:mm}.</p>
+
+                        <p>Your seat, <strong>{ticket.Seat.Code}</strong>, stays the same.</p>
+
+                        <p>Kind regards,<br />The TagusAir team</p>";
+
+                            _mailHelper.SendEmail(ticket.User.Email, subject, body);
+                        }
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
 
-
                 var flight = _converterHelper.ToFlight(viewModel, false);
                 await _flightRepository.UpdateAsync(flight);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -187,7 +219,7 @@ namespace TagusAir.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CancelConfirmed(int id)
         {
-            var flight = await _flightRepository.GetByIdAsync(id);
+            var flight = await _flightRepository.GetFlightWithDetailsAsync(id);
 
             if (flight == null)
             {
@@ -195,8 +227,28 @@ namespace TagusAir.Controllers
             }
 
             flight.IsActive = false;
-
             await _flightRepository.UpdateAsync(flight);
+
+            var tickets = await _ticketRepository.GetTicketsByFlightAsync(flight.Id);
+
+            foreach (var ticket in tickets)
+            {
+                var subject = $"Flight {flight.FlightNumber} has been cancelled";
+
+                var body = $@"
+            <p>Dear {ticket.User.FirstName},</p>
+
+            <p>We are very sorry to tell you that flight <strong>{flight.FlightNumber}</strong>,
+            {flight.DepartureAirport.City} to {flight.ArrivalAirport.City}, departing on
+            {flight.DepartureTime:dd/MM/yyyy} at {flight.DepartureTime:HH:mm}, will not operate.</p>
+
+            <p>Your seat was <strong>{ticket.Seat.Code}</strong>. Please get in touch with us and we
+            will find you a place on another flight or arrange your refund, whichever suits you best.</p>
+
+            <p>Kind regards,<br />The TagusAir team</p>";
+
+                _mailHelper.SendEmail(ticket.User.Email, subject, body);
+            }
 
             return RedirectToAction(nameof(Index));
         }

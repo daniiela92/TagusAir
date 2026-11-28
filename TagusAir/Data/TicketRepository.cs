@@ -121,6 +121,15 @@ namespace TagusAir.Data
             && !t.IsCanceled && t.SeatId == seatId);
         }
 
-      
+        public async Task<List<Ticket>> GetTicketsByFlightAsync(int flightId)
+        {
+            return await _context.Tickets
+                .Include(t => t.Seat)
+                .Include(t => t.User)
+                .Where(t => t.FlightId == flightId && !t.IsCanceled)
+                .ToListAsync();
+        }
+
+
     }
 }
