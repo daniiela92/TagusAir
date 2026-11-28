@@ -182,7 +182,9 @@ namespace TagusAir.Controllers
                 return await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
             }
 
-            if (string.IsNullOrEmpty(viewModel.FirstName) || string.IsNullOrEmpty(viewModel.LastName) || string.IsNullOrEmpty(viewModel.Email))
+            if (string.IsNullOrEmpty(viewModel.FirstName)
+               || string.IsNullOrEmpty(viewModel.LastName)
+               || string.IsNullOrEmpty(viewModel.Email))
             {
                 ModelState.AddModelError(string.Empty, "Please fill in your name and email");
                 return null;
@@ -205,6 +207,8 @@ namespace TagusAir.Controllers
                 LastName = viewModel.LastName,
                 Email = viewModel.Email,
                 UserName = viewModel.Email,
+                Passport = viewModel.Passport,
+                PhoneNumber = viewModel.PhoneNumber,
             };
 
 
@@ -218,6 +222,24 @@ namespace TagusAir.Controllers
             }
 
             await _userHelper.AddUserToRoleAsync(createdUser, "Customer");
+
+            var passwordToken = await _userHelper.GeneratePasswordResetTokenAsync(createdUser);
+
+            var link = this.Url.Action(
+                "ResetPassword",
+                "Account",
+                new { token = passwordToken }, protocol: HttpContext.Request.Scheme);
+
+            _mailHelper.SendEmail(createdUser.Email, "Welcome to TagusAir - set your password",
+                $@"
+                <p>Dear {createdUser.FirstName},</p>
+
+                <p>We created an account for you so you can manage your booking later.
+                To choose your own password, use the link below.</p>
+
+                <p><a href=""{link}"">Set my password</a></p>
+
+                <p>Kind regards,<br />The TagusAir team</p>");
 
             var loginViewModel = new LoginViewModel
             {

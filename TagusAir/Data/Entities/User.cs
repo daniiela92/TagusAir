@@ -5,15 +5,15 @@ namespace TagusAir.Data.Entities
 {
     public class User : IdentityUser
     {
-        [MaxLength(50, ErrorMessage = "The field {0} can contain {1} characters lenght.")]
+        [MaxLength(50, ErrorMessage = "The field {0} can contain {1} characters length.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [MaxLength(50, ErrorMessage = "The field {0} can contain {1} characters lenght.")]
+        [MaxLength(50, ErrorMessage = "The field {0} can contain {1} characters length.")]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [MaxLength(20, ErrorMessage = "The field {0} can contain {1} characters lenght.")]
+        [MaxLength(20, ErrorMessage = "The field {0} can contain {1} characters length.")]
         public string? Passport { get; set; }
 
         [Display(Name = "Full Name")]
